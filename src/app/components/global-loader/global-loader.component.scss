@@ -1,87 +1,100 @@
-/* ===== FULL SCREEN OVERLAY ===== */
-
-.global-loader-overlay {
+.global-loader-overlay{
   position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.55);
+  inset:0;
+  background: rgba(15,23,42,0.45);
   backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-  animation: fadeIn 0.3s ease;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:99999;
 }
 
-/* ===== GLASS CARD ===== */
+/* Loader container */
 
-.glass-loader-card {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 40px 50px;
-  border-radius: 20px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  animation: floatUp 0.4s ease;
+.modern-loader{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
 }
 
-/* ===== GRADIENT SPINNER ===== */
+/* Ring */
 
-.gradient-spinner {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+.loader-ring{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* rotating gradient border */
+
+.loader-ring::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  padding:3px;
   background: conic-gradient(
-    from 0deg,
     #2563eb,
     #3b82f6,
-    #1e3a8a,
+    #60a5fa,
     #2563eb
   );
-  animation: spin 1s linear infinite;
-  position: relative;
+
+  animation: spin 1.5s linear infinite;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
-/* Inner white circle */
-.gradient-spinner::after {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  background: white;
-  border-radius: 50%;
+/* icon */
+
+.support-icon{
+  font-size:46px;
+  height: 50px;
+  width: 50px;
+  color:white;
+  animation: pulse 1.5s infinite;
 }
 
-/* ===== TEXT ===== */
+/* text */
 
-.loader-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-  letter-spacing: 0.5px;
+.loader-text{
+  color:white;
+  font-size:15px;
+  font-weight:500;
 }
 
-/* ===== ANIMATIONS ===== */
+/* dots */
 
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
+.dots span{
+  animation: blink 1.4s infinite;
 }
 
-@keyframes floatUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.dots span:nth-child(2){animation-delay:.2s;}
+.dots span:nth-child(3){animation-delay:.4s;}
+
+/* animations */
+
+@keyframes spin{
+  100%{transform:rotate(360deg);}
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.15);}
+  100%{transform:scale(1);}
+}
+
+@keyframes blink{
+  0%,80%,100%{opacity:0}
+  40%{opacity:1}
 }

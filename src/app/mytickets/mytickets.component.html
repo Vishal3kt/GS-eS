@@ -3,11 +3,15 @@
 <div class="container" *ngIf="this.enablebtn">
     <!-- Create Button Row -->
     <div class="row mb-3">
-      <div class="col-md-12 col-sm-12">
-        <button mat-raised-button class="me-2" (click)="openModel()">
+      <div class="col-md-12 col-sm-12" style="margin-bottom: 12px !important; gap: 12px !important;">
+        <button style="margin-right: 14px !important;" mat-raised-button class="me-2" (click)="openModel()">
           <mat-icon class="me-1">add</mat-icon>
           Create
         </button>
+         <button mat-raised-button (click)="download()" class="download-btn">
+            <mat-icon class="me-2">download</mat-icon>
+            Download Excel
+          </button>
       </div>
     </div>
     
@@ -41,12 +45,12 @@
             <mat-icon>clear</mat-icon>
           </button>
         </div>
-        <div class="col-md-4 col-sm-12 d-flex justify-content-end">
-          <button mat-raised-button color="primary" (click)="download()" class="download-btn">
+        <!-- <div class="col-md-4 col-sm-12 d-flex justify-content-end">
+          <button mat-raised-button (click)="download()" class="download-btn">
             <mat-icon class="me-2">download</mat-icon>
             Download Excel
           </button>
-        </div> 
+        </div>  -->
     </div>
     
     <!-- Table Row -->
@@ -183,7 +187,7 @@
                                               <mat-label>Issue Title</mat-label>
                                               <input matInput formControlName="casetitle" [maxLength]="800" placeholder="Enter Issue title" />
                                               <mat-error *ngIf="submitted && tempData.casetitle.errors">
-                                                <span *ngIf="tempData.casetype.errors.required">Issue title is required</span>
+                                                <span *ngIf="tempData.casetitle.errors.required">Issue title is required</span>
                                               </mat-error>
                                             </mat-form-field>
                                           </div>
@@ -264,7 +268,7 @@
                                               <mat-icon class="me-1">close</mat-icon>
                                               Cancel
                                             </button>
-                                            <button mat-raised-button type="submit" color="primary">
+                                            <button mat-raised-button type="submit">
                                               <mat-icon class="me-1" *ngIf="!loading">send</mat-icon>
                                               <mat-icon class="me-1 spinning" *ngIf="loading">refresh</mat-icon>
                                               Create Ticket

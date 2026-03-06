@@ -1,70 +1,94 @@
-
-<div class="container-fluid">
-    <div class="row flex-nowrap">
-        <!-- px-sm-2 -->
-        <div class="col-auto col-md-3 col-xl-2  col-sm-2 px-0 bg fixed">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a routerLink="/LoadingComponent/Dashboard" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <span class="fs-5 d-none d-sm-inline">
-                        <img class="logo" src="../../assets/images/logo.png" alt="">
-                    </span>
-                    
-                </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                    <div  style="width: 100%;display: grid;">
-                        <li class="nav-item navh" [routerLinkActive]="['active']" *ngFor="let data of navItem">
-                            <a   routerLink="{{data.path}}" class="nav-link align-middle px-0 imgone">
-                               <mat-icon class="nav-icon-mat">{{data.icon}}</mat-icon>
-                               <span class="ms-1 d-none d-md-inline spantext">{{data.name}}</span> 
-                            </a>
-                        </li> 
-                    </div>
-
-                    <li class="nav-item navh bottomend" [routerLinkActive]="['active']" (click)="logout()">
-                        <a  class="nav-link align-middle px-0 imgone">
-                           <mat-icon class="nav-icon-mat">logout</mat-icon>
-                           <span class="ms-1 d-none d-md-inline spantext">Logout</span> 
+<div class="main-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <!-- <img class="sidebar-logo" src="../../assets/images/logo.png" alt="Logo"> -->
+                <img class="sidebar-logo" src="../../assets/3KT-Logo.png" alt="Logo">
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item" [routerLinkActive]="['active']" *ngFor="let data of navItem">
+                        <a routerLink="{{data.path}}" class="nav-link">
+                            <mat-icon class="nav-icon">{{data.icon}}</mat-icon>
+                            <span class="nav-text">{{data.name}}</span>
                         </a>
-                    </li> 
+                    </li>
                 </ul>
                 
-            </div>
-        </div>
-        <div class="col col-sm-10 py-3 overflowtext">
-            <nav class="navbar navbar-expand-sm  navbar-dark paddingright">
-                <div class="container-fluid padding">                          
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 dropdown e-caret-hide"> 
-                        <li class="dropdown-toggle logout ptext" data-bs-toggle="dropdown">
-                            <img src="../../assets/images/img_avatar.png" alt="Avatar" class="avatar"> 
-                            <p class="username">{{this.username}}</p>  
-                               <img class="imgmenu" src="../../assets/images/user menu.png" alt=""></li>
-                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li class="paddingli"><a class="dropdown-item ditem">
-                                <mat-icon class="dropdown-icon-mat me-2">person</mat-icon>
-                                Profile
-                            </a></li>
-                            <li class="paddingli" (click)="changepassword()"><a class="dropdown-item ditem">
-                                <mat-icon class="dropdown-icon-mat me-2">lock</mat-icon>
-                                Change Password
-                            </a></li>
-                       </ul>  
-                    </ul> 
+                <!-- Logout at bottom -->
+                <div class="logout-section">
+                    <li class="nav-item" (click)="logout()">
+                        <a class="nav-link logout-link">
+                            <mat-icon class="nav-icon">logout</mat-icon>
+                            <span class="nav-text">Logout</span>
+                        </a>
+                    </li>
                 </div>
-               </nav>
-            <div class="margintop">
-               <router-outlet></router-outlet>
-            </div>
-            <!-- <footer>
-                <p class="text-center footertext">Copyright © 2020 3K Technologies. All Rights Reserved. "3K" is a registered trademark of 3K Technologies </p>
-            </footer> -->
-            <div class="row copyright">
-                <div class="col-sm-12 col-md-12 col-xl-12">
-                  <p class="copyrighttext">
-                    Copyright © 2020 3K Technologies. All Rights Reserved. "3K" is a
-                    registered trademark of 3K Technologies
-                  </p>
-                </div>
-              </div>
+            </nav>
         </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="page-title">Tickets</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile" [class.show-dropdown]="isDropdownOpen" (click)="toggleDropdown()">
+                        <img src="../../assets/images/img_avatar.png" alt="User Avatar" class="user-avatar">
+                        <div class="user-info">
+                            <p class="user-name">{{this.username}}</p>
+                            <p class="user-role">Administrator</p>
+                        </div>
+                        <mat-icon class="dropdown-arrow">arrow_drop_down</mat-icon>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="profile-dropdown" [class.show]="isDropdownOpen">
+                            <div class="dropdown-header">
+                                <img src="../../assets/images/img_avatar.png" alt="User Avatar" class="dropdown-avatar">
+                                <div class="dropdown-user-info">
+                                    <p class="dropdown-user-name">{{this.username}}</p>
+                                    <p class="dropdown-user-role">Administrator</p>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="dropdown-menu-list">
+                                <li class="dropdown-item" (click)="viewProfile()">
+                                    <mat-icon class="item-icon">person</mat-icon>
+                                    <span class="item-text">My Profile</span>
+                                </li>
+                                <li class="dropdown-item" (click)="changepassword()">
+                                    <mat-icon class="item-icon">lock</mat-icon>
+                                    <span class="item-text">Change Password</span>
+                                </li>
+                                <li class="dropdown-item logout-item" (click)="logout()">
+                                    <mat-icon class="item-icon-logout">logout</mat-icon>
+                                    <span class="item-text-logout">Logout</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+            <router-outlet></router-outlet>
+        </div>
+
+        <!-- Footer -->
+        <footer class="page-footer">
+            <p class="footer-text">
+                Copyright 2020 3K Technologies. All Rights Reserved. "3K" is a registered trademark of 3K Technologies
+            </p>
+        </footer>
     </div>
 </div>

@@ -439,9 +439,7 @@ outline: none;
   p{
     margin-bottom: 0px;
   }
-  .table-responsive{
-    margin-top:30px;
-  }
+
   .bgyash{
     background: #F9F9F9;
     border: 1px solid #EBEBEB;
@@ -457,6 +455,17 @@ background: #F8F8F8;
 .example-form-field{
 height: 40px; 
 }
+
+// Modal z-index fixes
+.modal{z-index:1050!important}
+.modal.fade{z-index:1050!important}
+.modal.show{z-index:1050!important}
+.modal-backdrop{z-index:1040!important}
+.modal-backdrop.fade{z-index:1040!important}
+.modal-backdrop.show{z-index:1040!important}
+.modal-dialog{z-index:1051!important}
+.modal-content{z-index:1052!important}
+.modal.fade.show .modal-dialog{z-index:1051!important;transform:none!important}
 
 // Fix date picker visibility issues
 ::ng-deep .mat-calendar-table-header {
@@ -564,4 +573,12 @@ text-align: left;
     border-spacing: 0;
     border-collapse: collapse;
     width: 95% !important;
+}
+
+table{
+  th{
+    background: #DCECFB !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+  }
 }

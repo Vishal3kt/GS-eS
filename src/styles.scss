@@ -164,5 +164,25 @@ table.table-bordered thead tr:first-child td,
 }
 
 ::ng-deep .modal-backdrop.show{
-  z-index: 1039 !important;
+  z-index: 1040 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+::ng-deep .modal{
+  z-index: 1050 !important;
+  position: fixed !important;
+}
+
+::ng-deep .modal-dialog{
+  z-index: 1051 !important;
+  position: relative !important;
+}
+
+::ng-deep .modal-content{
+  z-index: 1052 !important;
+  position: relative !important;
 }

@@ -1,6 +1,20 @@
 <div *ngIf="isLoading" class="global-loader-overlay">
-  <div class="glass-loader-card">
-    <div class="gradient-spinner"></div>
-    <p class="loader-text">Please wait...</p>
+
+  <div class="modern-loader">
+
+    <div class="loader-ring">
+      <mat-icon class="support-icon">support_agent</mat-icon>
+    </div>
+
+    <p class="loader-text">
+      Connecting to support
+      <span class="dots">
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+      </span>
+    </p>
+
   </div>
+
 </div>

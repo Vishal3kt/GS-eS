@@ -1,5 +1,5 @@
 .dashboard-container {
-  padding: 0 2rem 0rem 2rem;
+  padding: 0;
 }
 
 .dashboard-header {
@@ -33,7 +33,7 @@
 
 .ticket-stats-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
   
@@ -183,7 +183,7 @@
     margin-bottom: 1rem;
     
     .section-title {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       font-weight: 600;
       color: #495057;
       margin: 0;
@@ -229,14 +229,15 @@
       width: 100%;
       
       .table-header {
-        background-color: #333;
+        background-color: #fff;
         font-weight: 600;
-        color: #ffffff;
+        color: #333 !important;
         padding: 1rem;
         font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         border-bottom: 2px solid #e9ecef;
+        font-weight: 600 !important;
       }
       
       .table-cell {
@@ -248,7 +249,6 @@
         .case-id {
           font-weight: 600;
           color: #6c757d;
-          font-family: 'Courier New', monospace;
         }
         
         .status-badge, .priority-badge {
@@ -302,7 +302,7 @@
   }
   
   .dashboard-title {
-    font-size: 2rem !important;
+    font-size: 1.5rem;
   }
   
   .ticket-stats-grid {

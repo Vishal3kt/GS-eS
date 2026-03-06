@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,6 +21,8 @@ navItem=[
   userDetails: any;
   userDetails1: any;
   username: any;
+  isDropdownOpen: boolean = false;
+  
   constructor(public router:Router) {
 
     this.router.events.subscribe((event:any) => {
@@ -73,12 +75,37 @@ navItem=[
       this.username=this.userDetails1.email;
     }
   }
+  
+  // Toggle dropdown
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+  
+  // Close dropdown when clicking outside
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const userProfile = document.querySelector('.user-profile');
+    
+    if (userProfile && !userProfile.contains(target)) {
+      this.isDropdownOpen = false;
+    }
+  }
+  
+  // View profile method
+  viewProfile(): void {
+    // Add profile navigation logic here
+    this.isDropdownOpen = false;
+    console.log('View profile clicked');
+  }
+  
   logout(){
     sessionStorage.clear();
     localStorage.clear();
     this.router.navigate(["/login"]);    
   }
   changepassword(){
+    this.isDropdownOpen = false; // Close dropdown when navigating
     this.router.navigate(["/LoadingComponent/ChangePassword"]);    
   }
 }
