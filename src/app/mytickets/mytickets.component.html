@@ -1,0 +1,355 @@
+<div class="container-fluid" style="padding: 0px;">
+</div>
+<div class="container" *ngIf="this.enablebtn">
+    <!-- Create Button Row -->
+    <div class="row mb-3">
+      <div class="col-md-12 col-sm-12">
+        <button mat-raised-button class="me-2" (click)="openModel()">
+          <mat-icon class="me-1">add</mat-icon>
+          Create
+        </button>
+      </div>
+    </div>
+    
+    <!-- Filter Row -->
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-4 col-sm-12">
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Status Reason</mat-label>
+                <mat-select placeholder="Select Status" [value]="selectedstatus" (selectionChange)="statuscode($event.value)">
+                    <mat-option value="0">Active</mat-option>
+                    <mat-option value="1">Resolved</mat-option>
+                    <mat-option value="2">Cancelled</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Date Range</mat-label>
+            <mat-date-range-input 
+              [formGroup]="this.campaignOne"
+              [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start"
+              [comparisonEnd]="campaignOne.value.end" [max]="maxDate">
+              <input matStartDate placeholder="Start date" formControlName="start" >
+              <input matEndDate placeholder="End date" formControlName="end">
+            </mat-date-range-input> 
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+          <button mat-icon-button *ngIf="this.closebtn" (click)="removedates()" matTooltip="Clear date filter">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+        <div class="col-md-4 col-sm-12 d-flex justify-content-end">
+          <button mat-raised-button color="primary" (click)="download()" class="download-btn">
+            <mat-icon class="me-2">download</mat-icon>
+            Download Excel
+          </button>
+        </div> 
+    </div>
+    
+    <!-- Table Row -->
+    <div class="row" *ngIf="this.enablebtn">
+      <div class="table-responsive mat-elevation-z2">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+          <ng-container matColumnDef="ticketnumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ticket Number</th>
+            <td mat-cell *matCellDef="let data" (click)="selectrow(data)">{{ data.ticketnumber }}</td>
+          </ng-container>
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Case Title</th>
+            <td mat-cell *matCellDef="let data" (click)="selectrow(data)">{{ data.title }}</td>
+          </ng-container>
+          <ng-container matColumnDef="casetype">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Case Type</th>
+            <td mat-cell *matCellDef="let data" (click)="selectrow(data)">
+              <p *ngIf="data.casetypecode==1">Question</p>
+              <p *ngIf="data.casetypecode==2">Problem</p>
+              <p *ngIf="data.casetypecode==3">Feature Request</p>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
+            <td mat-cell *matCellDef="let data" (click)="selectrow(data)">
+              <p *ngIf="data.prioritycode==1">High</p>
+              <p *ngIf="data.prioritycode==2">Medium</p>
+              <p *ngIf="data.prioritycode==3">Low</p>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="entitlement">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Entitlement</th>
+            <td mat-cell *matCellDef="let data" (click)="selectrow(data)">{{ data.new_entitlementname }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status Reason</th>
+            <td mat-cell *matCellDef="let data; let i = index">
+              <div *ngIf="data.statecode==0">
+                <p *ngIf="data.statuscode==4">Analysis</p>
+                <p *ngIf="data.statuscode==100000004">Open</p>
+                <p *ngIf="data.statuscode==100000003">Completed</p>
+                <p *ngIf="data.statuscode==3">Cust Info Required</p>
+                <div *ngIf="data.statuscode==968590004">
+                  <select [(ngModel)]="data.statuscode" (ngModelChange)="updatechange($event,data,i)">
+                    <option value="968590004">Customer Info</option>
+                    <option value="968590005">Customer Reply</option>
+                  </select>
+                </div>
+                <div *ngIf="data.statuscode==968590006">
+                  <select [(ngModel)]="data.statuscode" style="border: none; background: transparent;" (ngModelChange)="updatechange($event,data,i)">
+                    <option value="968590006" disabled>Hours Approval</option>
+                    <option value="968590007">Hours Approved</option>
+                  </select>
+                </div>
+                <p *ngIf="data.statuscode==968590007">Hours Approved</p>
+                <p *ngIf="data.statuscode==968590005">Customer Reply</p>
+                <p *ngIf="data.statuscode==100000005">Assigned</p>
+                <p *ngIf="data.statuscode==1">In Progress</p>
+                <p *ngIf="data.statuscode==968590008">Customer Testing</p>
+                <p *ngIf="data.statuscode==968590009">Deploy</p>
+                <p *ngIf="data.statuscode==2">On Hold by 3KT</p>
+                <p *ngIf="data.statuscode==2">On Hold by Customer</p>
+                <p *ngIf="data.statuscode==100000001">UAT</p>
+                <p *ngIf="data.statuscode==100000002">Production</p>
+                <div *ngIf="data.statuscode==968590000">
+                  <select [(ngModel)]="data.statuscode" style="border: none; background: transparent;" (ngModelChange)="updatechange($event,data,i)">
+                    <option value="968590000" disabled>Request to Close</option>
+                    <option value="100000003">Completed</option>
+                  </select>
+                </div>
+                <p *ngIf="data.statuscode==968590011">Request for cancelation</p>
+              </div>
+              <div *ngIf="data.statecode==1">
+                <p *ngIf="data.statuscode==5">Problem Solved</p>
+                <p *ngIf="data.statuscode==1000">Information Provided</p>
+              </div>
+              <div *ngIf="data.statecode==2">
+                <p *ngIf="data.statuscode==6">Cancelled</p>
+                <p *ngIf="data.statuscode==2000">Merged</p>
+                <p *ngIf="data.statuscode==100000000">On Hold</p>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="createdon">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created On</th>
+            <td mat-cell *matCellDef="let data">{{ data.createdon | date:'yyyy-MM-dd' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let data">
+              <button mat-icon-button (click)="more(data)" type="button" title="More details">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngStyle]="row.selected && {'background': '#7B9EF6','color':'#fff'}"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="8">No tickets to show.</td>
+          </tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+</div>
+
+<!-- Create Ticket Modal -->
+<div class="modal fade"
+        id="myModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true" data-backdrop="static"
+        data-keyboard="false"
+        data-ignoreBackdropClick="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <div class="modal-header text-left" style="padding-top: 0px;
+                    padding-bottom: 0px;">
+                        <div><span class="tittle">Case Creation</span></div>
+                    </div>
+
+                    <div class="modal-body text-center">
+                                <div class="col-md-12 col-lg-12 col-xl-12 col-sm-12 col-xs-12">
+                                        <form
+                                          [formGroup]="caseForm"
+                                          (ngSubmit)="onSubmit()"
+                                          class="my-form"
+                                        >
+                                        
+                                        <!-- Two columns layout -->
+                                        <div class="row">
+                                          <div class="col-md-12 mb-3 input">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                              <mat-label>Issue Title</mat-label>
+                                              <input matInput formControlName="casetitle" [maxLength]="800" placeholder="Enter Issue title" />
+                                              <mat-error *ngIf="submitted && tempData.casetitle.errors">
+                                                <span *ngIf="tempData.casetype.errors.required">Issue title is required</span>
+                                              </mat-error>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-12 mb-3 input">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                              <mat-label>Severity Level</mat-label>
+                                              <mat-select formControlName="priority">
+                                                <mat-option value="1">High</mat-option>
+                                                <mat-option value="2">Medium</mat-option>
+                                                <mat-option value="3">Low</mat-option>
+                                              </mat-select>
+                                              <mat-error *ngIf="submitted && tempData.priority.errors">
+                                                <span *ngIf="tempData.priority.errors.required">Priority is required</span>
+                                              </mat-error>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-12 mb-3 input">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                              <mat-label>Entitlement</mat-label>
+                                              <mat-select formControlName="entitlement">
+                                                <mat-option value="" disabled>No entitlements available</mat-option>
+                                                <mat-option *ngFor="let data of Dataentitlelist; trackBy: trackByEntitlementId" [value]="data.entitlementid">{{data.name}}</mat-option> 
+                                              </mat-select>
+                                              <mat-error *ngIf="submitted && tempData.entitlement.errors">
+                                                <span *ngIf="tempData.entitlement.errors.required">Entitlement is required</span>
+                                              </mat-error>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-12 mb-3 input">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                              <mat-label>Issue Description</mat-label>
+                                              <textarea matInput formControlName="discription" [maxLength]="1048576" rows="4" placeholder="Enter Issue description"></textarea>
+                                              <mat-error *ngIf="submitted && tempData.discription.errors">
+                                                <span *ngIf="tempData.discription.errors.required">Description is required</span>
+                                              </mat-error>
+                                            </mat-form-field>
+                                          </div>
+                                        </div>
+                                           
+                                        <div class="row">
+                                          <div class="col-md-12 mb-3 input">
+                                            <div class="d-flex align-items-center">
+                                              <mat-label class="me-3 mb-0">Attachment</mat-label>
+                                              <button mat-stroked-button type="button" (click)="fileInput.click()">
+                                                Choose File
+                                              </button>
+                                              <input #fileInput type="file" accept=".jpg,.png,.pdf,.doc,.docx,.xlsx" (change)="pdfOnload($event)" style="display:none" />
+                                            </div>
+                                            
+                                            <div *ngIf="this.filenames.length!=0" class="mt-3">
+                                              <div class="attachment-list">
+                                                <div class="attachment-label mb-2">Attached Files:</div>
+                                                <div class="attachment-items">
+                                                  <div *ngFor="let data of this.filenames;let i =index;" class="attachment-item">
+                                                    <mat-icon class="attachment-icon">description</mat-icon>
+                                                    <span class="attachment-name">{{data.name}}</span>
+                                                    <button mat-icon-button class="remove-attachment-btn" (click)="removedata(data,i)" matTooltip="Remove attachment">
+                                                      <mat-icon class="remove-icon">close</mat-icon>
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div> 
+                                        
+                                        <div class="btns d-flex justify-content-end gap-2 mt-4">
+                                            <button style="border: 1px solid #ccc;" mat-button (click)="close()">
+                                              <mat-icon class="me-1">close</mat-icon>
+                                              Cancel
+                                            </button>
+                                            <button mat-raised-button type="submit" color="primary">
+                                              <mat-icon class="me-1" *ngIf="!loading">send</mat-icon>
+                                              <mat-icon class="me-1 spinning" *ngIf="loading">refresh</mat-icon>
+                                              Create Ticket
+                                            </button>
+                                        </div>
+                                        </form>
+                                      
+                                  </div>
+                            
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+        </div>
+
+<!-- Edit Ticket Modal -->
+      <div class="modal fade" 
+      id="myModal1" 
+      tabindex="-1" 
+      aria-labelledby="exampleModalLabel"
+        aria-hidden="true" 
+        
+        data-keyboard="false" data-ignoreBackdropClick="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content widthmax">
+                  <div class="container">
+
+                  <div class="row">
+                    <div class="col-md-8 closemodal closemodaltext">
+                      <span class="ticketno"> Ticket Number : {{this.ticketnumber}}</span>
+
+                    </div>
+                    <div class="col-md-4 text-end closemodal" (click)="close1()">
+                      <img src="../../assets/images/x-mark.png" alt="">
+
+                    </div>
+                    <div class="col-md-4 bold">
+                      Description
+                    </div>
+                    <div class="col-md-6 account">
+                      {{this.Description}}
+                    </div> 
+                    <div class="col-md-4 bold">
+                      Approved Hours
+                    </div>
+                    <div class="col-md-4 account">
+                      {{this.new_approvedhours}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 bold">
+                      Estimated Hours
+                    </div>
+                    <div class="col-md-8 account">
+                      {{this.new_estimatedhours}}
+                    </div>
+                  </div>
+                  <div class="row">                   
+                    <div class="btns1 widthmax margintop"> 
+                      <div *ngIf="this.selectedstatus=='0'" class="d-flex gap-2">
+                        <button mat-raised-button (click)="edit(this.seletedrecord)">
+                          <mat-icon class="me-1">edit</mat-icon>
+                          Edit
+                        </button>                     
+                        <button mat-raised-button (click)="onhold()">
+                          <mat-icon color="primary" class="me-1" *ngIf="!loading1">pause</mat-icon>
+                          <mat-icon class="me-1 spinning" *ngIf="loading1">refresh</mat-icon>
+                          On Hold By Customer
+                        </button>
+                        <button mat-raised-button (click)="oncancel()">
+                          <mat-icon color="warn" class="me-1" *ngIf="!loading2">cancel</mat-icon>
+                          <mat-icon class="me-1 spinning" *ngIf="loading2">refresh</mat-icon>
+                          Request For Cancelation
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                </div>
+            </div>
+        </div>
+
+<!-- <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "square-loader" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner> -->

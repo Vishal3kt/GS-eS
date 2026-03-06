@@ -1,0 +1,168 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import url('https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: 'Jost', sans-serif !important;
+}
+
+// Global Material checkbox color fix
+.mat-mdc-checkbox-checked .mdc-checkbox__background {
+  background-color: #f8f8f8 !important;
+  border: 1px solid #ccc !important;
+}
+
+.mat-mdc-checkbox-checked .mdc-checkbox__checkmark {
+  color: #0A387B !important;
+}
+
+.mat-mdc-checkbox:not(:checked):hover .mdc-checkbox__background {
+  border-color: #0A387B !important;
+}
+
+.mat-mdc-checkbox:not(:checked):hover .mdc-checkbox__background::before {
+  border-color: #ffffff !important;
+}
+
+.mdc-checkbox:active .mdc-checkbox__native-control:checked~.mdc-checkbox__ripple{
+  background-color: #ffffff !important;
+}
+
+.mdc-checkbox .mdc-checkbox__native-control:focus:checked~.mdc-checkbox__ripple{
+  background-color: #ffffff !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+b,
+button,
+a,
+td,
+th,
+strong,
+label,
+input,
+textarea {
+ font-family: 'Jost', sans-serif;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+ul,
+li,
+ol {
+  list-style: none;
+}
+
+a {
+  color: unset;
+  text-decoration: none;
+}
+
+.table>:not(:first-child) {
+    border-top: 0px!important;
+}
+.mat-tab-nav-bar, .mat-tab-header {
+    border-bottom: 0px!important;
+}
+table thead tr:first-child,
+.mat-mdc-header-row {
+    background: #00255B;
+    border-radius: 10px 10px 0px 0px!important;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    text-align: left;
+    color: #FFFFFF;
+}
+table tbody{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    color: #000;
+    vertical-align: middle;
+} 
+table tbody tr td,
+.mat-mdc-cell {
+    word-break: break-all;
+}
+table thead tr th{     
+    font-weight: 400!important;
+}
+table.table-bordered th,
+table.table-bordered td,
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+    vertical-align: middle;
+    text-align: left;
+    border: 1px solid #DADADA;
+    line-height: 30px;
+}
+table.table-bordered th,
+.mat-mdc-header-cell {
+    font-size: 18px;
+}
+table.table-bordered td,
+.mat-mdc-cell {
+    font-size: 12px;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+.mat-mdc-paginator {
+    color: #00255B;
+}
+.mat-mdc-header-row {
+    background: #00255B !important;
+}
+.mat-mdc-header-cell {
+    color: #fff !important;
+}
+
+table.table-bordered thead tr:first-child th,
+table.table-bordered thead tr:first-child td,
+.mat-mdc-header-cell {
+    font-size: 15px !important;
+}
+@import "bootstrap/scss/bootstrap";
+
+.mat-cell{
+    text-align: center;
+    padding: 16px 0;
+}
+
+::ng-deep .modal-backdrop.show{
+  z-index: 1039 !important;
+}

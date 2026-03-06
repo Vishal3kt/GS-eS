@@ -1,0 +1,206 @@
+<div class="container edit-case-container">
+  <!-- Header with Back Button -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <button mat-raised-button (click)="goBack()" class="back-btn me-3">
+            <mat-icon class="me-1">arrow_back</mat-icon>
+            Back to Tickets
+          </button>
+          <h4 class="header mb-0">Edit Case</h4>
+        </div>
+        <div class="plus">
+          <button mat-icon-button (click)="addnotes()" class="add-comment-btn">
+            <mat-icon>comment</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content - Side by Side Layout -->
+  <div class="row main-content-row content-area">
+    <!-- Left Column - Case Information -->
+    <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+      <form [formGroup]="caseForm" class="my-form">
+
+        <!-- Case Information Section -->
+        <div class="case-info-section">
+          <h5 class="section-title mb-3">Case Information</h5>
+          
+          <!-- Two columns layout -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 disabled-field">
+                <mat-label>Case Title</mat-label>
+                <input matInput formControlName="casetitle" [maxLength]="800" />
+              </mat-form-field>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 disabled-field">
+                <mat-label>Case Type</mat-label>
+                <mat-select formControlName="casetype">
+                  <mat-option value="1">Question</mat-option>
+                  <mat-option value="2">Problem</mat-option>
+                  <mat-option value="3">Feature Request</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 disabled-field">
+                <mat-label>Priority</mat-label>
+                <mat-select formControlName="priority">
+                  <mat-option value="1">High</mat-option>
+                  <mat-option value="2">Medium</mat-option>
+                  <mat-option value="3">Low</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 disabled-field">
+                <mat-label>Entitlement</mat-label>
+                <input matInput formControlName="entitlement" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <mat-form-field appearance="outline" class="w-100 disabled-field">
+                <mat-label>Description</mat-label>
+                <textarea matInput [maxLength]="1048576" formControlName="discription" rows="4"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+    
+    <!-- Right Column - Comments Section -->
+    <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+      <div class="comments-section">
+        <!-- Search Section -->
+        <div class="search-section mb-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Search Comments</mat-label>
+            <input matInput [(ngModel)]="searchdata" placeholder="Search comments..." />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+      <div *ngIf="this.commentboxshow" class="comment-form-section">
+        <mat-card class="comment-card">
+          <mat-card-header>
+            <mat-card-title>Create a Comment</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="commentform" class="my-form" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="title" />
+                  </mat-form-field>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Comment</mat-label>
+                    <textarea matInput [maxLength]="1048576" formControlName="comment" rows="4"></textarea>
+                    <mat-error *ngIf="submitted && tempData.comment.errors">
+                      <span *ngIf="tempData.comment.errors.required">Comment is required</span>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <div class="d-flex align-items-center">
+                    <mat-label class="me-3 mb-0">Attachment</mat-label>
+                    <button mat-stroked-button type="button" (click)="fileInput.click()">
+                      <mat-icon class="me-1">attach_file</mat-icon>
+                      Choose File
+                    </button>
+                    <input #fileInput type="file" accept=".jpg,.png,.pdf,.doc,.docx,.xlsx" (change)="pdfOnload($event)" style="display:none" />
+                  </div>
+                  
+                  <div *ngIf="this.filenames.length!=0" class="mt-2">
+                    <div class="attachment-list">
+                      <mat-chip-listbox>
+                        <mat-chip *ngFor="let data of this.filenames; let i = index;" [removable]="true" (removed)="removedata(data,i)">
+                          <mat-icon class="me-1">description</mat-icon>
+                          {{data.name}}
+                        </mat-chip>
+                      </mat-chip-listbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="btns d-flex justify-content-end gap-2 mt-4">
+                <button mat-raised-button type="submit" color="primary">
+                  <mat-icon class="me-1" *ngIf="!loading">send</mat-icon>
+                  <mat-icon class="me-1 spinning" *ngIf="loading">refresh</mat-icon>
+                  Add Comment
+                </button>
+                <button mat-button (click)="close()">
+                  <mat-icon class="me-1">close</mat-icon>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div *ngFor="let data of this.commentsdata | filter:searchdata" class="comment-item">
+        <mat-card class="comment-card mb-3">
+          <mat-card-content>
+            <div class="row">
+              <div class="col-md-2 col-sm-2">
+                <div class="user-avatar">
+                  <p *ngIf="data._ownerid_value=='7123652e-f5ab-ec11-983f-000d3a1ddf55'">
+                    {{this.displayshortname}}</p>
+                  <p *ngIf="data._ownerid_value!='7123652e-f5ab-ec11-983f-000d3a1ddf55'">3KT</p>
+                </div>
+              </div>
+              <div class="col-md-10 col-sm-10">
+                <div class="comment-content">
+                  <p class="comment-author" *ngIf="data._ownerid_value=='7123652e-f5ab-ec11-983f-000d3a1ddf55'">
+                    Commented By <span class="author-name">{{this.displayname}}</span>
+                  </p>
+                  <p class="comment-author" *ngIf="data._ownerid_value!='7123652e-f5ab-ec11-983f-000d3a1ddf55'">
+                    Commented By <span class="author-name">3KT Team</span>
+                  </p>
+                  
+                  <p class="comment-subject">{{data.subject}}</p>
+                  <p class="comment-text" [innerHTML]="data.notetext"></p>
+                  
+                  <a (click)="openfile(data)" class="attachment-link" *ngIf="data.filename">
+                    <mat-icon class="me-1">attach_file</mat-icon>
+                    {{data.filename}}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-loader" [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner> -->

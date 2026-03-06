@@ -1,0 +1,28 @@
+.textcolor{
+    color: #606060;
+    min-width: 99px;
+    border-right: 1px solid #606060;
+}
+.textcolor:last-child{
+    border-right: none;
+}
+.textright{
+    float: right;
+}
+.mat-tab-link {
+    height: 25px;
+}
+.mat-tab-link.mat-tab-label-active {
+    
+    border-bottom: none;
+}
+ 
+@media screen and (max-width: 600px) {
+    .textright{ 
+        min-width: auto; 
+        width: 100%;
+    }
+  }
+  .mat-tab-link.mat-tab-label-active:focus{
+outline: none;
+  }

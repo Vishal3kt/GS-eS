@@ -1,0 +1,205 @@
+.imgleftlogo{
+    width: auto;
+    height: auto;
+    max-width: 90%;
+    max-height: 469px;  
+}
+.logo{
+    width: auto;
+    margin-left:10px;
+    margin-top:20px;
+    margin-bottom:20px;
+    cursor: pointer;
+}
+.topcss{
+    margin-top: -20px;
+}
+.copyright{
+    position: fixed;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
+    margin-top:38px;
+    background: white;
+    padding: 10px 0;
+    left: 0;
+}
+.copyrighttext{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px; 
+    color: rgba(43, 43, 43, 0.8); 
+    margin-bottom: 0px;
+}
+.well{
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;         
+        line-height: 20px; 
+        border-radius:16px;
+        border:1px solid #E0EDFF;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow:  0px 0px 20px 5px #ECF5FF;
+        height: auto;
+        width:82%;
+}
+.btn1{
+    background: #0A387B;
+    border: 1px solid #0A387B;
+    border-radius: 40px;
+    width: 100%;
+    padding: 10px;
+    color: #fff;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;  
+    text-align: center;
+    text-transform: uppercase;
+    height: 58px;
+}
+.forgottext{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: #938E8E;
+}
+.forgottext a{
+    color: #0A387B!important;
+    text-decoration: none;
+    font-weight: bold;
+}
+label{
+    font-style: normal;
+    font-weight: 400;
+    font-size:16px;
+    line-height: 24px;
+    color: #151515;
+}
+.remember{
+    margin-left:10px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: #938E8E;
+}
+// Remove old checkbox styling as we're now using Material checkbox
+// #rememberMe{
+//     background: #FFFFFF;
+//     border: 1px solid #ACD4F7;
+//     border-radius: 4px;
+//     width: 22px;
+//     height: 22px;
+//     display: block;
+//     float: left;
+//     margin-top: 1px;
+// }
+// #rememberMe{
+//     cursor: pointer;
+// }
+.form-control{
+    border: 1px solid #ACD4F7;
+    margin-bottom: 30px!important;
+    height: 58px;
+}
+.hidedata{
+    margin: auto;
+}
+@media screen and (max-width: 1000px) {
+  .hidedata{
+    display: none;
+  }
+  .well{
+    width:100%;
+    height: auto;
+  }
+  .copyright{
+    margin-top:40px;
+  }
+}
+.my-form{
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top:30px;
+}
+.help{
+    
+    margin-bottom: 30px;
+}
+.card-body {
+    border-radius: 6px !important;
+    padding: 0.5rem 0.5rem!important;
+}
+
+.logo-3KT{
+    width: auto;
+    height: 50px;
+    object-fit: contain;
+    margin-left:10px;
+    margin-top:20px;
+    margin-bottom:20px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+// Fix Material checkbox yellow color issue
+::ng-deep .mat-checkbox-checked .mat-checkbox-background {
+    background-color: #0A387B !important;
+    display: none;
+}
+
+::ng-deep .mat-checkbox-checked .mat-ripple-element {
+    background-color: #0A387B !important;
+    display: none;
+}
+
+.mat-mdc-form-field{
+  margin-bottom: 4px !important;
+}
+
+// Password field eye icon styling
+.mat-mdc-form-field-icon-suffix button {
+  color: rgba(0, 0, 0, 0.54);
+  
+  &:hover {
+    color: rgba(0, 0, 0, 0.87);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+// Ensure password field has proper spacing
+.mat-mdc-text-field-wrapper {
+  .mat-mdc-form-field-icon-suffix {
+    padding-left: 8px;
+  }
+}
+
+// Fix checkbox color issue (global fix)
+.mat-mdc-checkbox {
+  .mdc-checkbox__background {
+    background-color: #f5f5f5 !important;
+    border-color: #757575 !important;
+  }
+  
+  .mdc-checkbox__checkmark {
+    color: #1976d2 !important;
+  }
+  
+  &.mdc-checkbox--selected {
+    .mdc-checkbox__background {
+      background-color: #1976d2 !important;
+      border-color: #1976d2 !important;
+    }
+    
+    .mdc-checkbox__checkmark {
+      color: white !important;
+    }
+  }
+}

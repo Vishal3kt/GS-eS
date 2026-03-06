@@ -1,0 +1,96 @@
+<div class="dashboard-container">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">Dashboard</h1>
+      <button mat-raised-button class="new-ticket-btn" (click)="createNewTicket()">
+        <mat-icon>add_circle</mat-icon>
+        New Ticket
+      </button>
+    </div>
+  </div>
+
+  <!-- Ticket Status Tiles -->
+  <div class="ticket-stats-grid">
+    <div class="stat-card" *ngFor="let stat of ticketStats" 
+         [style.border-left-color]="stat.color" 
+         [style.--card-color-rgb]="hexToRgb(stat.color)"
+         (click)="viewAllTickets()">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon [style.color]="stat.color">{{stat.icon}}</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number" [style.color]="stat.color">{{stat.count}}</div>
+          <div class="stat-label">{{stat.name}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity Section -->
+  <div class="recent-activity-section">
+    <div class="section-header">
+      <h2 class="section-title">Recent Activity</h2>
+      <button mat-button class="view-all-btn" (click)="viewAllTickets()">
+        View All
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+    
+    <mat-card class="activity-table-card">
+      <div class="table-container">
+        <table mat-table [dataSource]="recentActivities" class="activity-table">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="table-header">ID</th>
+            <td mat-cell *matCellDef="let activity" class="table-cell">
+              <span class="case-id">{{activity.id}}</span>
+            </td>
+          </ng-container>
+
+          <!-- Title Column -->
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef class="table-header">Title</th>
+            <td mat-cell *matCellDef="let activity" class="table-cell">{{activity.title}}</td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="table-header">Status</th>
+            <td mat-cell *matCellDef="let activity" class="table-cell">
+              <span class="status-badge" [style.background-color]="getStatusColor(activity.status)" [style.color]="'white'">
+                {{activity.status}}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Priority Column -->
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef class="table-header">Priority</th>
+            <td mat-cell *matCellDef="let activity" class="table-cell">
+              <span class="priority-badge" [style.background-color]="getPriorityColor(activity.priority)" [style.color]="'white'">
+                {{activity.priority}}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Created Column -->
+          <ng-container matColumnDef="created">
+            <th mat-header-cell *matHeaderCellDef class="table-header">Created</th>
+            <td mat-cell *matCellDef="let activity" class="table-cell">{{activity.created}}</td>
+          </ng-container>
+
+          <!-- Customer Column -->
+          <ng-container matColumnDef="customer">
+            <th mat-header-cell *matHeaderCellDef class="table-header">Customer</th>
+            <td mat-cell *matCellDef="let activity" class="table-cell">{{activity.customer}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+        </table>
+      </div>
+    </mat-card>
+  </div>
+</div> 

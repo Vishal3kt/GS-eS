@@ -1,0 +1,100 @@
+<div class="container-fluid">
+    <div class="row topcss">
+      <div class="col-sm-2 logo">
+        <img class="logo" src="../../assets/images/logo 2.png" alt="" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-7 col-lg-7 col-xl-7 col-sm-12 col-xs-12 hidedata text-center">
+        <img
+          class="imgleftlogo"
+          src="../../assets/images/image 3.png"
+          alt="Girl in a jacket"
+        />
+      </div>
+      <div class="col-md-5 col-lg-5 col-xl-5 col-sm-12 col-xs-12">
+        <div class="card well">
+       <div class="card-body" *ngIf="intialVal">
+            <form
+              [formGroup]="enteremail"
+              (ngSubmit)="submitemail()"
+              class="my-form"
+            >
+              <div class="titlehead"><span class="tittle">Forgot Password</span></div>
+              
+              <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Email Address</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  autocomplete="username"
+                  formControlName="email"
+                  placeholder="Enter your email address"
+                />
+                <mat-error *ngIf="f.email.errors && (f.email.touched || submitted)">
+                  <span *ngIf="f.email.errors.required">Please enter your email address</span>
+                  <span *ngIf="f.email.errors.email">
+                    Please enter a valid email address
+                  </span>
+                </mat-error>
+              </mat-form-field>
+
+              <button 
+                type="submit" 
+                mat-raised-button 
+                class="w-100 mb-3"
+                [disabled]="loading">
+                <span *ngIf="!loading">SUBMIT</span>
+                <span *ngIf="loading">
+                  <mat-progress-spinner 
+                    diameter="20" 
+                    mode="indeterminate">
+                  </mat-progress-spinner>
+                  Submitting...
+                </span>
+              </button>
+
+              <div class="help">
+                <p class="forgottext">
+                  Back To <span class="span" (click)="finalVal()">Sign In</span>
+                </p>
+              </div>
+            </form>
+          </div>
+            <div class="card-body" *ngIf="success">
+            <form class="my-form">
+              <div><span class="tittletextsuccs">Password Reset Successful</span></div>
+              <div class="textbelow">
+                <label class="endtxt"
+                  >Awesome!
+                  <span class="forgottext"
+                    >you've successfully updated your password.</span
+                  ></label
+                >
+              </div>
+              <div class="help">
+                <div class="final">
+                  <button 
+                    type="button" 
+                    mat-raised-button 
+                    class="w-100 mb-3"
+                    (click)="finalVal()">
+                    Go Back to Sign In
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row copyright">
+      <div class="col-sm-12 col-md-12 col-xl-12">
+        <p class="copyrighttext">
+          Copyright © 2020 3K Technologies. All Rights Reserved. "3K" is a
+          registered trademark of 3K Technologies
+        </p>
+      </div>
+    </div>
+  </div>
+  

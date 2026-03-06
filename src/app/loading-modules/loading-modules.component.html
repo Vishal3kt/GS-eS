@@ -1,0 +1,70 @@
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <!-- px-sm-2 -->
+        <div class="col-auto col-md-3 col-xl-2  col-sm-2 px-0 bg fixed">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                <a routerLink="/LoadingComponent/Dashboard" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5 d-none d-sm-inline">
+                        <img class="logo" src="../../assets/images/logo.png" alt="">
+                    </span>
+                    
+                </a>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                    <div  style="width: 100%;display: grid;">
+                        <li class="nav-item navh" [routerLinkActive]="['active']" *ngFor="let data of navItem">
+                            <a   routerLink="{{data.path}}" class="nav-link align-middle px-0 imgone">
+                               <mat-icon class="nav-icon-mat">{{data.icon}}</mat-icon>
+                               <span class="ms-1 d-none d-md-inline spantext">{{data.name}}</span> 
+                            </a>
+                        </li> 
+                    </div>
+
+                    <li class="nav-item navh bottomend" [routerLinkActive]="['active']" (click)="logout()">
+                        <a  class="nav-link align-middle px-0 imgone">
+                           <mat-icon class="nav-icon-mat">logout</mat-icon>
+                           <span class="ms-1 d-none d-md-inline spantext">Logout</span> 
+                        </a>
+                    </li> 
+                </ul>
+                
+            </div>
+        </div>
+        <div class="col col-sm-10 py-3 overflowtext">
+            <nav class="navbar navbar-expand-sm  navbar-dark paddingright">
+                <div class="container-fluid padding">                          
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 dropdown e-caret-hide"> 
+                        <li class="dropdown-toggle logout ptext" data-bs-toggle="dropdown">
+                            <img src="../../assets/images/img_avatar.png" alt="Avatar" class="avatar"> 
+                            <p class="username">{{this.username}}</p>  
+                               <img class="imgmenu" src="../../assets/images/user menu.png" alt=""></li>
+                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="paddingli"><a class="dropdown-item ditem">
+                                <mat-icon class="dropdown-icon-mat me-2">person</mat-icon>
+                                Profile
+                            </a></li>
+                            <li class="paddingli" (click)="changepassword()"><a class="dropdown-item ditem">
+                                <mat-icon class="dropdown-icon-mat me-2">lock</mat-icon>
+                                Change Password
+                            </a></li>
+                       </ul>  
+                    </ul> 
+                </div>
+               </nav>
+            <div class="margintop">
+               <router-outlet></router-outlet>
+            </div>
+            <!-- <footer>
+                <p class="text-center footertext">Copyright © 2020 3K Technologies. All Rights Reserved. "3K" is a registered trademark of 3K Technologies </p>
+            </footer> -->
+            <div class="row copyright">
+                <div class="col-sm-12 col-md-12 col-xl-12">
+                  <p class="copyrighttext">
+                    Copyright © 2020 3K Technologies. All Rights Reserved. "3K" is a
+                    registered trademark of 3K Technologies
+                  </p>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>

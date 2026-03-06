@@ -1,0 +1,494 @@
+// Modern Material Design styling for Edit Case component
+
+// Header styling
+.header {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  color: #151515;
+  margin: 0;
+  padding: 0;
+}
+
+// Back button styling
+.back-btn {
+  background-color: transparent;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Section title styling
+.section-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e3f2fd;
+}
+
+// Case info section
+.case-info-section {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #e9ecef;
+  height: 100%; // Make it fill the column height
+}
+
+// Comments section
+.comments-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e9ecef;
+  height: 100%; // Make it fill the column height
+  overflow-y: auto; // Add scroll if content is too long
+}
+
+// Side-by-side layout improvements
+@media (min-width: 768px) {
+  .case-info-section,
+  .comments-section {
+    min-height: 600px; // Ensure consistent height on larger screens
+  }
+}
+
+// Remove empty space and improve layout
+.container {
+  padding-bottom: 2rem;
+}
+
+// Main content row
+.main-content-row {
+  min-height: calc(100vh - 200px); // Fill available height minus header/footer
+}
+
+// Ensure no empty space at bottom
+.edit-case-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-area {
+  flex: 1;
+}
+
+// Add comment button
+.add-comment-btn {
+  float: right;
+  background-color: #1976d2;
+  color: white;
+  
+  &:hover {
+    background-color: #1565c0;
+  }
+}
+
+// Form styling
+.my-form {
+  .mb-3 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .w-100 {
+    width: 100%;
+  }
+}
+
+// Search section
+.search-section {
+  margin-bottom: 2rem;
+}
+
+// Comment form section
+.comment-form-section {
+  margin-bottom: 2rem;
+}
+
+.comment-card {
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 1rem;
+  
+  mat-card-header {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    
+    mat-card-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+  
+  mat-card-content {
+    padding: 1.5rem;
+  }
+}
+
+// User avatar
+.user-avatar {
+  background: #00255b;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 500;
+  margin: 0 auto;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// Comment content
+.comment-content {
+  .comment-author {
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    color: #666;
+    
+    .author-name {
+      font-weight: 600;
+      color: #333;
+    }
+  }
+  
+  .comment-subject {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .comment-text {
+    margin-bottom: 1rem;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+  }
+  
+  .attachment-link {
+    display: inline-flex;
+    align-items: center;
+    color: #1976d2;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    background-color: #e3f2fd;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: #bbdefb;
+      text-decoration: none;
+    }
+    
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// Comment item
+.comment-item {
+  margin-bottom: 1rem;
+}
+
+// Buttons section
+.btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  
+  .gap-2 {
+    gap: 0.5rem;
+  }
+}
+
+// Material form field overrides
+::ng-deep .mat-form-field-appearance-outline {
+  .mat-form-field-outline {
+    color: #1976d2 !important;
+  }
+  
+  .mat-form-field-outline-thick {
+    color: #1976d2 !important;
+  }
+  
+  &.mat-focused .mat-form-field-outline-thick {
+    color: #1976d2 !important;
+  }
+}
+
+// Disabled field styling
+.disabled-field {
+  ::ng-deep .mat-form-field-outline {
+    background-color: #f8f9fa !important;
+    border-color: #ced4da !important;
+  }
+  
+  ::ng-deep .mat-form-field-outline-thick {
+    border-color: #ced4da !important;
+  }
+  
+  ::ng-deep .mat-form-field-label {
+    color: #495057 !important;
+    font-weight: 500 !important;
+  }
+  
+  ::ng-deep .mat-input-element {
+    color: #212529 !important;
+    background-color: #f8f9fa !important;
+    font-weight: 400 !important;
+  }
+  
+  ::ng-deep .mat-select-value {
+    color: #212529 !important;
+    font-weight: 400 !important;
+  }
+  
+  ::ng-deep .mat-select-arrow {
+    color: #6c757d !important;
+  }
+  
+  ::ng-deep .mat-form-field-flex {
+    background-color: #f8f9fa !important;
+  }
+  
+  ::ng-deep .mat-form-field-infix {
+    background-color: #f8f9fa !important;
+  }
+  
+  ::ng-deep textarea.mat-input-element {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+  }
+  
+  ::ng-deep .mat-form-field-disabled .mat-form-field-outline {
+    background-color: #f8f9fa !important;
+    border-color: #ced4da !important;
+  }
+  
+  ::ng-deep .mat-form-field-disabled .mat-input-element {
+    color: #212529 !important;
+  }
+  
+  ::ng-deep .mat-form-field-disabled .mat-select-value {
+    color: #212529 !important;
+  }
+}
+
+// Chip styling
+.attachment-list {
+  margin-top: 0.5rem;
+}
+
+::ng-deep .mat-chip {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+  border-radius: 16px !important;
+  
+  .mat-icon {
+    color: #1976d2 !important;
+  }
+}
+
+// Spinning animation
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .comment-card {
+    margin-bottom: 0.5rem;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    
+    p {
+      font-size: 12px;
+    }
+  }
+  
+  .comment-content {
+    .comment-author {
+      font-size: 13px;
+    }
+    
+    .comment-subject {
+      font-size: 15px;
+    }
+    
+    .comment-text {
+      font-size: 13px;
+    }
+  }
+}
+
+// Legacy styles (keeping for compatibility)
+.form-control {
+  border: 1px solid #ACD4F7;
+  margin-bottom: 30px !important;
+  height: 58px;
+}
+
+.form-control1 {
+  border: 1px solid #ACD4F7;
+  margin-bottom: 30px !important;
+  width: 100%;
+  background: #e9ecef;
+}
+
+.form-control2 {
+  border: 1px solid #ACD4F7;
+  width: 100%;
+}
+
+.btn1 {
+  box-sizing: border-box;
+  width: 145px;
+  height: 58px;
+  left: calc(50% - 145px/2 - 283.5px);
+  top: calc(50% - 60px/2 - 281px);
+  background: #0A387B;
+  border: 1px solid #E7E7E7;
+  border-radius: 40px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  color: #fff;
+  line-height: 24px;
+}
+
+.commentbtn {
+  margin-top: 10px;
+  border-radius: 40px;
+  background-color: #0A387B;
+  padding: 10px;
+  color: #fff;
+  margin-bottom: 15px;
+  font-style: normal;
+  font-weight: 400;
+  text-align: center;
+  font-size: 20px;
+  height: 58px;
+  border: 1px solid #E7E7E7;
+  box-sizing: border-box;
+  width: 240px;
+}
+
+.closebtn {
+  margin-top: 10px;
+  margin-left: 21px;
+  width: 190px;
+  color: #686868;
+  font-style: normal;
+  font-weight: 400;
+  text-align: center;
+  font-size: 20px;
+  height: 58px;
+  background: #F8F8F8;
+  border: 1px solid #E7E7E7;
+  border-radius: 40px;
+}
+
+.center {
+  background: #00255b;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+}
+
+.borderbottom {
+  width: 100%;
+}
+
+.color {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  color: #151515;
+}
+
+.inlinecontent1,
+.inlinecontent {
+  display: inline-block;
+}
+
+label {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  float: left;
+  line-height: 24px;
+  color: #151515;
+}
+
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.attachfile {
+  margin: 5px 15px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 24px;
+  color: #B8B8B8;
+}
+
+.text-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.plus {
+  float: right;
+}
+
+.search {
+  position: relative;
+}
+
+.search .fa-search {
+  position: absolute;
+  top: 22px;
+  right: 36px;
+  color: #ccc;
+}

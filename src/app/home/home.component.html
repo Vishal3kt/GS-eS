@@ -1,0 +1,86 @@
+<header class="home-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand">
+        <img class="logo" src="../../assets/3KT-Logo.png" alt="">
+        <!-- <h3 class="mb-0 text-white">3K Technologies</h3> -->
+      </a>
+      <div class="ms-auto">
+        <button mat-raised-button (click)="goToLogin()">
+          <mat-icon class="me-2">login</mat-icon>
+          Login
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="home-main">
+
+  <!-- Full Width Carousel -->
+  <section class="hero-section">
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="assets/slider-images/slider1-without-text.webp" class="d-block w-100" alt="Innovative Solutions">
+          <div class="carousel-caption carousel-caption-left">
+            <div class="caption-content">
+              <h2>Innovative Solutions</h2>
+              <p>Modern technology for growing businesses</p>
+            </div>
+            <button  (click)="goToLogin()" style="width: 50%;" mat-raised-button>Get Started 
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+            
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="assets/slider-images/slider2-without-text.webp" class="d-block w-100" alt="Expert Support">
+          <div class="carousel-caption carousel-caption-left">
+            <div class="caption-content">
+              <h2>Expert Support</h2>
+              <p>24/7 dedicated technical assistance</p>
+            </div>
+           <button  (click)="goToLogin()" style="width: 50%;" mat-raised-button>Get Started 
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="assets/slider-images/slider3-without-text.webp" class="d-block w-100" alt="High Performance">
+          <div class="carousel-caption carousel-caption-left">
+            <div class="caption-content">
+              <h2>High Performance</h2>
+              <p>Fast, secure and scalable platforms</p>
+            </div>
+            <button  (click)="goToLogin()" style="width: 50%;" mat-raised-button>Get Started 
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="home-footer">
+  <div class="container text-center">
+    <p class="mb-0">
+      © 2026 3K Technologies. All rights reserved.
+    </p>
+  </div>
+</footer>

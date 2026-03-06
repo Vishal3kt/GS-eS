@@ -1,0 +1,33 @@
+    <div class="container">
+        <div class="table-responsive mat-elevation-z2">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                    <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+                </ng-container>
+                <ng-container matColumnDef="startdate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</th>
+                    <td mat-cell *matCellDef="let row">{{ row.startdate | date:'MM-dd-yyyy' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="enddate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>End Date</th>
+                    <td mat-cell *matCellDef="let row">{{ row.enddate | date:'MM-dd-yyyy' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="totalterms">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Hours</th>
+                    <td mat-cell *matCellDef="let row">{{ row.totalterms }}</td>
+                </ng-container>
+                <ng-container matColumnDef="remainingterms">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Remaining Hours</th>
+                    <td mat-cell *matCellDef="let row">{{ row.remainingterms }}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="5">No data available.</td>
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+    <!-- <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-loader" [fullScreen]="true"><p style="color: white"> Loading... </p></ngx-spinner> -->
