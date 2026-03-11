@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   isLoadingActivity = true;
 
   constructor(
-    public route: Router, 
+    public route: Router,
     private apiService: ApiService,
     private loadingService: LoadingService,
     private snackBar: MatSnackBar,
@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   loadDashboardData(): void {
     // Get user email from multiple sources
     let userEmail = sessionStorage.getItem('email') || localStorage.getItem('email');
-    
+
     // If still not found, try to get it from loginDetails
     if (!userEmail) {
       const loginDetails = sessionStorage.getItem('loginDetails') || localStorage.getItem('loginDetails');
@@ -71,9 +71,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         }
       }
     }
-    
+
     console.log('Dashboard - Retrieved user email:', userEmail);
-    
+
     if (!userEmail) {
       console.error('No user email found in storage');
       this.isLoadingCounts = false;
@@ -83,7 +83,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // Load dashboard counts
     this.loadDashboardCounts(userEmail);
-    
+
     // Load recent activity
     this.loadRecentActivity(userEmail);
   }
@@ -128,7 +128,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   mapDashboardCounts(response: any): void {
     console.log('Raw dashboard counts response:', response);
-    
+
     // Map API response to ticket stats
     // API returns lowercase keys: open, resolved, cancel, hold
     if (response && response.open !== undefined) {
@@ -143,20 +143,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (response && response.resolved !== undefined) {
       this.ticketStats[3].targetCount = parseInt(response.resolved) || 0; // RESOLVED
     }
-    
+
     console.log('Mapped ticket stats:', this.ticketStats);
   }
 
   mapRecentActivity(response: any): void {
     console.log('Raw recent activity response:', response);
-    
+
     // Initialize with empty array
     this.recentActivities = [];
-    
+
     // Map API response to recent activities
     // Handle different response formats
     let activitiesArray: any[] = [];
-    
+
     if (response && Array.isArray(response)) {
       activitiesArray = response;
     } else if (response && response.value && Array.isArray(response.value)) {
@@ -164,7 +164,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     } else if (response && response.Data && Array.isArray(response.Data)) {
       activitiesArray = response.Data;
     }
-    
+
     // Map activities and limit to latest 3
     if (activitiesArray.length > 0) {
       this.recentActivities = activitiesArray
@@ -181,7 +181,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           fullCustomer: item.Customer || item.customer || item._customerid_value || 'N/A'
         }));
     }
-    
+
     console.log('Mapped recent activities (limited to 3):', this.recentActivities);
   }
 
@@ -213,7 +213,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (statElements[index]) {
       statElements[index].classList.add('animated');
     }
-    
+
     const duration = 1500; // 1.5 seconds
     const steps = 60;
     const increment = item.targetCount / steps;
@@ -223,7 +223,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const timer = setInterval(() => {
       current += increment;
       step++;
-      
+
       if (step >= steps) {
         item.count = item.targetCount;
         clearInterval(timer);
@@ -241,8 +241,27 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.route.navigate(["/LoadingComponent/Myticket"]);
   }
 
+  viewTicketsByStatus(stat: any): void {
+    const name = (stat?.name || '').toString().trim().toLowerCase();
+    let statusParam: string | null = null;
+
+    if (name === 'open') {
+      statusParam = 'open';
+    } else if (name === 'cancel') {
+      statusParam = 'cancel';
+    } else if (name === 'on hold') {
+      statusParam = 'hold';
+    } else if (name === 'resolved') {
+      statusParam = 'resolved';
+    }
+
+    this.route.navigate(["/LoadingComponent/Myticket"], {
+      queryParams: statusParam ? { status: statusParam } : undefined
+    });
+  }
+
   getStatusColor(status: string): string {
-    switch(status.toLowerCase()) {
+    switch (status.toLowerCase()) {
       case 'open': return '#2196f3';
       case 'cancel': return '#f44336';
       case 'on hold': return '#ff9800';
@@ -254,7 +273,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   getPriorityColor(priority: string): string {
-    switch(priority.toLowerCase()) {
+    switch (priority.toLowerCase()) {
       case 'high': return '#f44336';
       case 'medium': return '#ff9800';
       case 'low': return '#4caf50';
@@ -284,7 +303,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     const code = Number(statusCode);
-    switch(code) {
+    switch (code) {
       case 0: return "Open";
       case 1: return "In Progress";
       case 2: return "On Hold by 3KT";
@@ -333,7 +352,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     const code = Number(priorityCode);
-    switch(code) {
+    switch (code) {
       case 1: return "High";
       case 2: return "Medium";
       case 3: return "Low";
@@ -347,9 +366,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (typeof caseTypeCode === 'string') {
       return caseTypeCode; // Already text
     }
-    
+
     const code = Number(caseTypeCode);
-    switch(code) {
+    switch (code) {
       case 1: return "Question";
       case 2: return "Problem";
       case 3: return "Feature Request";
@@ -359,7 +378,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   hexToRgb(hex: string): string {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result 
+    return result
       ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
       : '108, 117, 125'; // Default gray
   }
@@ -388,7 +407,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   showWelcomeMessageOnce(): void {
     // Check if this is the first time loading dashboard after login
     const hasShownWelcome = sessionStorage.getItem('welcomeShown');
-    
+
     if (!hasShownWelcome) {
       const loginDetails = sessionStorage.getItem('loginDetails') || localStorage.getItem('loginDetails');
       if (loginDetails) {
