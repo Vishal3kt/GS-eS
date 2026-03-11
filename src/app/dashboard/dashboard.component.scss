@@ -103,9 +103,6 @@
         box-shadow: 0 6px 20px rgba(var(--card-color-rgb), 0.3);
       }
       
-      .stat-number {
-        transform: scale(1.05);
-      }
     }
     
     .stat-content {
@@ -151,7 +148,6 @@
         font-weight: 600;
         line-height: 1;
         margin-bottom: 0.5rem;
-        animation: countUp 1.5s ease-out;
         color: #343a40;
         text-shadow: 0 1px 2px rgba(0,0,0,0.05);
         transition: all 0.3s ease;
@@ -160,6 +156,10 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        
+        &:not(.animated) {
+          animation: none;
+        }
       }
       
       .stat-label {
@@ -217,12 +217,25 @@
   }
   
   .activity-table-card {
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    overflow: hidden;
+    border-radius: 4px;
     
     .table-container {
-      overflow-x: auto;
+      min-height: 200px;
+      position: relative;
+    }
+    
+    .loading-container, .empty-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      padding: 2rem;
+    }
+    
+    .loading-message, .empty-message {
+      font-size: 1rem;
+      color: #6c757d;
+      font-weight: 500;
     }
     
     .activity-table {
@@ -241,14 +254,24 @@
       }
       
       .table-cell {
-        padding: 1rem;
-        border-bottom: 1px solid #f1f3f4;
         font-size: 0.9rem;
-        color: #495057;
+        vertical-align: middle;
         
         .case-id {
           font-weight: 600;
-          color: #6c757d;
+          display: inline-block;
+          max-width: 100px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        
+        span {
+          display: inline-block;
+          max-width: 750px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
         
         .status-badge, .priority-badge {
@@ -273,6 +296,21 @@
   }
 }
 
+// Loading skeleton animation
+.loading-skeleton {
+  animation: pulse 1.5s ease-in-out infinite alternate;
+  color: #adb5bd !important;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 // Counter Animation
 @keyframes countUp {
   0% {
@@ -286,6 +324,26 @@
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+// Dashboard Footer Styling
+.dashboard-footer {
+  position: relative;
+  bottom: 0px;
+  text-align: center;
+  width: 100%;
+  margin-top: 38px;
+  background: white;
+  padding: 10px 0;
+  left: 0;
+  
+  .footer-text {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px; 
+    color: rgba(43, 43, 43, 0.8); 
+    margin-bottom: 0px;
   }
 }
 
@@ -370,5 +428,32 @@
   
   .table-container {
     overflow-x: scroll;
+  }
+}
+
+// MatSnackBar styling
+::ng-deep .mat-mdc-snack-bar-container {
+  &.success-snackbar {
+    .mdc-snackbar__surface {
+      background-color: #4caf50 !important;
+      color: white !important;
+      font-weight: 500;
+    }
+  }
+  
+  &.error-snackbar {
+    .mdc-snackbar__surface {
+      background-color: #f44336 !important;
+      color: white !important;
+      font-weight: 500;
+    }
+  }
+  
+  &.info-snackbar {
+    .mdc-snackbar__surface {
+      background-color: #2196f3 !important;
+      color: white !important;
+      font-weight: 500;
+    }
   }
 }

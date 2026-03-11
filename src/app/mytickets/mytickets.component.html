@@ -68,17 +68,13 @@
           <ng-container matColumnDef="casetype">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Case Type</th>
             <td mat-cell *matCellDef="let data" (click)="selectrow(data)">
-              <p *ngIf="data.casetypecode==1">Question</p>
-              <p *ngIf="data.casetypecode==2">Problem</p>
-              <p *ngIf="data.casetypecode==3">Feature Request</p>
+              <p>{{ data.casetype }}</p>
             </td>
           </ng-container>
           <ng-container matColumnDef="priority">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
             <td mat-cell *matCellDef="let data" (click)="selectrow(data)">
-              <p *ngIf="data.prioritycode==1">High</p>
-              <p *ngIf="data.prioritycode==2">Medium</p>
-              <p *ngIf="data.prioritycode==3">Low</p>
+              <p>{{ data.priority }}</p>
             </td>
           </ng-container>
           <ng-container matColumnDef="entitlement">
@@ -182,7 +178,7 @@
                                         
                                         <!-- Two columns layout -->
                                         <div class="row">
-                                          <div class="col-md-12 mb-3 input">
+                                          <div class="col-md-6 mb-3 input">
                                             <mat-form-field appearance="outline" class="w-100">
                                               <mat-label>Issue Title</mat-label>
                                               <input matInput formControlName="casetitle" [maxLength]="800" placeholder="Enter Issue title" />
@@ -191,10 +187,8 @@
                                               </mat-error>
                                             </mat-form-field>
                                           </div>
-                                        </div>
 
-                                        <div class="row">
-                                          <div class="col-md-12 mb-3 input">
+                                           <div class="col-md-6 mb-3 input">
                                             <mat-form-field appearance="outline" class="w-100">
                                               <mat-label>Severity Level</mat-label>
                                               <mat-select formControlName="priority">
@@ -302,7 +296,7 @@
 
                   <div class="row">
                     <div class="col-md-8 closemodal closemodaltext">
-                      <span class="ticketno"> Ticket Number : {{this.ticketnumber}}</span>
+                      <span class="ticketno"> Ticket Number : <span style="font-weight: 600;">{{this.ticketnumber}}</span></span>
 
                     </div>
                     <div class="col-md-4 text-end closemodal" (click)="close1()">

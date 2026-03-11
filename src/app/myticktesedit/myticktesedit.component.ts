@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ApiService } from '../services/api.service';
 import { LoaderService } from '../services/loader.service';
 import { CommonModule } from '@angular/common';
@@ -18,8 +17,7 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-myticktesedit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ModalModule, FilterPipe, NgxSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatChipsModule, MatCardModule],
-  providers: [BsModalService],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, FilterPipe, NgxSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatChipsModule, MatCardModule],
   templateUrl: './myticktesedit.component.html',
   styleUrls: ['./myticktesedit.component.scss']
 })
@@ -43,6 +41,7 @@ export class MytickteseditComponent implements OnInit {
   base64: any;
   base64result1: any;
   filenames: any=[];
+  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
   displayname: any;
   secondletter: string='';
   firstletter: string='';
@@ -50,7 +49,6 @@ export class MytickteseditComponent implements OnInit {
   searchdata:string='';
   constructor(public formBuilder:FormBuilder,
     public LoaderService:LoaderService,
-    public bsModalRef: BsModalRef,
     public api:ApiService,public route: ActivatedRoute,public router:Router) {  
 
      
@@ -60,12 +58,13 @@ export class MytickteseditComponent implements OnInit {
         console.log(res);
         this.datafinal=JSON.parse(res.Data);
         console.log(this.datafinal,"this.datafinal");
+        const ticket = Array.isArray(this.datafinal) ? this.datafinal[0] : this.datafinal;
         this.caseForm = this.formBuilder.group({ 
-          casetitle: [this.datafinal[0].title, [Validators.required]],
-          casetype: [this.datafinal[0].casetypecode, [Validators.required]],
-          priority : [this.datafinal[0].prioritycode, [Validators.required]],
-          entitlement : [this.datafinal[0].new_entitlementname, [Validators.required]],
-          discription:[this.datafinal[0].description]
+          casetitle: [ticket?.title || '', [Validators.required]],
+          casetype: [ticket?.casetypecode ?? '', [Validators.required]],
+          priority : [ticket?.prioritycode ?? '', [Validators.required]],
+          entitlement : [ticket?.new_entitlementname || ticket?.entitlement || '', [Validators.required]],
+          discription:[ticket?.description || '']
         });
 
         // Disable all case information form controls to make them truly non-editable
@@ -213,6 +212,9 @@ export class MytickteseditComponent implements OnInit {
    
   const file = event.target.files[0];
   console.log(file);
+  if (!file) {
+    return;
+  }
   this.filename=file.name;
   const reader:any = new FileReader();
   reader.readAsDataURL(file);
@@ -223,6 +225,10 @@ export class MytickteseditComponent implements OnInit {
        this.base64result1 = reader.result.split(';base64,')[1];
        this.filenames.push({name:file.name,base64:this.base64result1});
        console.log(this.filenames); 
+       // Reset input so selecting the same file again triggers (change)
+       if (event?.target) {
+        event.target.value = '';
+       }
       //  alert("hi");
       //  console.log(event.target.files[0].type);
       //  console.log(event.target.files);
@@ -236,6 +242,10 @@ export class MytickteseditComponent implements OnInit {
  removedata(data:any,i:any){
   this.filenames.splice(i, 1);
   console.log(this.filenames);
+  // Reset input so selecting the same file again triggers (change)
+  if (this.fileInput?.nativeElement) {
+    this.fileInput.nativeElement.value = '';
+  }
  }
  openfile(data:any){
    const fileName = data.filename;

@@ -109,6 +109,6 @@ export class ApiInterceptor implements HttpInterceptor {
   private clearSessionAndRedirect(): void {
     sessionStorage.clear();
     localStorage.clear();
-    this.router.navigate(['/Login']);
+    this.router.navigate(['/login']);
   }
 }

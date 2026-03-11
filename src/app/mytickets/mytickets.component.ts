@@ -1,10 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { LoaderService } from '../services/loader.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { MytickteseditComponent } from '../myticktesedit/myticktesedit.component';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -30,14 +29,14 @@ const year = today.getFullYear();
 @Component({
   selector: 'app-mytickets',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ModalModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatSelectModule, NgxSpinnerModule, MytickteseditComponent],
-  providers: [BsModalService],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatSelectModule, NgxSpinnerModule, MytickteseditComponent],
   templateUrl: './mytickets.component.html',
   styleUrls: ['./mytickets.component.scss']
 })
 export class MyticketsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
 
   formModal: any;
   activeLinkIndex = -1;
@@ -89,7 +88,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
      private formBuilder: FormBuilder,
      public  LoaderService:LoaderService,
      public http:HttpClient,
-     private modalService: BsModalService,
      public api:ApiService,
      private cdr: ChangeDetectorRef) {
       this.maxDate = new Date();
@@ -102,6 +100,42 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
   trackByEntitlementId(index: number, item: any): string {
     return item.entitlementid;
+  }
+
+  // Helper function to get entitlement name by ID
+  getEntitlementNameById(entitlementId: string): string {
+    if (!entitlementId || !this.Dataentitlelist) {
+      // Return first entitlement name (xebia) instead of N/A
+      return this.Dataentitlelist && this.Dataentitlelist.length > 0 
+        ? this.Dataentitlelist[0].name 
+        : 'N/A';
+    }
+    
+    const entitlement = this.Dataentitlelist.find((ent: any) => 
+      ent.entitlementid === entitlementId
+    );
+    
+    return entitlement ? entitlement.name : (this.Dataentitlelist[0]?.name || 'N/A');
+  }
+
+  // Helper function to get entitlement name from ticket data
+  getEntitlementName(ticket: any): string {
+    // First try to use new_entitlementname if available
+    if (ticket.new_entitlementname) {
+      return ticket.new_entitlementname;
+    }
+    
+    // Then try to map using entitlement ID
+    if (ticket._entitlementid_value) {
+      return this.getEntitlementNameById(ticket._entitlementid_value);
+    }
+    
+    // Fallback to first entitlement name (xebia)
+    if (this.Dataentitlelist && this.Dataentitlelist.length > 0) {
+      return this.Dataentitlelist[0].name;
+    }
+    
+    return 'N/A';
   }
 
   ngAfterViewInit(): void {
@@ -154,6 +188,14 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           this.entitlementid = null;
           console.log('No entitlement data available for this customer');
         }
+
+        // Re-map entitlement names for already-loaded tickets
+        if (this.dataSource?.data && this.dataSource.data.length > 0) {
+          this.dataSource.data = this.dataSource.data.map((t: any) => ({
+            ...t,
+            new_entitlementname: this.getEntitlementName(t)
+          }));
+        }
         // Force change detection
         this.cdr.detectChanges();
         setTimeout(() => {
@@ -187,6 +229,8 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
               casetype="Problem";
             }else if(res.value[i].casetypecode==3){
               casetype="Feature Request";
+            }else{
+              casetype="General"; // Default when casetypecode is null or not recognized
             }
             let prioritycode='';
             if(res.value[i].prioritycode==1){
@@ -241,7 +285,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
             else if(res.value[i].statuscode==2){
               statuscode="On Hold by 3KT"
             }
-            else if(res.value[i].statuscode==2){
+            else if(res.value[i].statuscode==968590010){
               statuscode="On Hold by Customer"
             }
             else if(res.value[i].statuscode==100000001){
@@ -297,12 +341,15 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
             data1.state = statecode;
             data1.createdon = createdon1;
             
+            // Map entitlement name using the helper function
+            data1.new_entitlementname = this.getEntitlementName(res.value[i]);
+            
             let data2={
               "Ticket Number":res.value[i].ticketnumber,
               "Case Title":res.value[i].title,
               "Case Type":casetype,
               "Priority":prioritycode,
-              "Entitlement":res.value[i].new_entitlementname,
+              "Entitlement":data1.new_entitlementname,
               "Estimated Hours":new_estimatedhours,
               "Approved Hours":new_approvedhours,
               "Status Reason":statuscode,
@@ -481,6 +528,9 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
    
     const file = event.target.files[0];
     console.log(file);
+    if (!file) {
+      return;
+    }
     this.filename=file.name;
     const reader:any = new FileReader();
     reader.readAsDataURL(file);
@@ -491,6 +541,10 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
          this.base64result1 = reader.result.split(';base64,')[1];
          this.filenames.push({name:file.name,base64:this.base64result1});
          console.log(this.filenames); 
+         // Reset input so selecting the same file again triggers (change)
+         if (event?.target) {
+          event.target.value = '';
+         }
         //  console.log(base64result,"bhavanibase64");         
         //  console.log(this.base64result1);
     };
@@ -884,5 +938,9 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   removedata(data:any,i:any){
     this.filenames.splice(i, 1);
     console.log(this.filenames);
+    // Reset input so selecting the same file again triggers (change)
+    if (this.fileInput?.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
    }
 }

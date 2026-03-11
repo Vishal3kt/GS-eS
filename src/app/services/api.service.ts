@@ -98,6 +98,27 @@ export class ApiService {
     return this.http.get(url);
   }
 
+  // Dashboard API methods
+  getDashboardCounts(email: any) {
+    const url = "https://fb4fccab30bfec1087f97bf0e05e93.10.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ece00cda87244c589c7e28aaf6fd7574/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=-gO1WeXSb0X2NuwSTmqsMEXjiCqcHMY6G_JsEJHBO0U";
+    const body = {
+      "Login Email id": email
+    };
+    console.log('Dashboard counts API URL:', url);
+    console.log('Dashboard counts API body:', body);
+    return this.http.post(url, body);
+  }
+
+  getRecentActivity(email: any) {
+    const url = "https://fb4fccab30bfec1087f97bf0e05e93.10.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/698ebb2677264a5e97ff610e284f16f5/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=3n-alJnVgEPuAHTL-nYqI1X342-UyGbjjiEQL1FgBoQ";
+    const body = {
+      "Login Email id": email
+    };
+    console.log('Recent activity API URL:', url);
+    console.log('Recent activity API body:', body);
+    return this.http.post(url, body);
+  }
+
 
 
 }

@@ -3,19 +3,23 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';   
 import { ApiService } from '../services/api.service';
 import { LoaderService } from '../services/loader.service';
+import { NotificationService } from '../services/notification.service';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // REMOVED: MatProgressSpinnerModule - not using manual loading anymore
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCheckboxModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCheckboxModule, MatIconModule, MatSnackBarModule],
+  providers: [MatSnackBar, NotificationService],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -28,7 +32,8 @@ export class LoginComponent implements OnInit {
   hidePassword = true;
   constructor(public router: Router, 
     private formBuilder: FormBuilder,
-    public api:ApiService,public loadingservice:LoaderService) {}
+    public api:ApiService,public loadingservice:LoaderService,
+    private notificationService: NotificationService) {}
   ngOnInit(): void {
     // alert("Hi I am working.")
     this.loginForm = this.formBuilder.group({
@@ -88,24 +93,27 @@ export class LoginComponent implements OnInit {
           if(this.savedata=="local"){
             localStorage.setItem("login", "YES");
             localStorage.setItem("loginDetails", JSON.stringify(data));
+            localStorage.removeItem('welcomeShown');
           }else{
             sessionStorage.setItem("login", "YES");
             sessionStorage.setItem("loginDetails", JSON.stringify(data));
+            sessionStorage.removeItem('welcomeShown');
           }
           
+          this.notificationService.showLoginSuccess(this.loginForm.value.email);
           this.router.navigate(["/LoadingComponent"]);
          }else{
           console.log('Password length mismatch:');
           console.log('Entered:', this.loginForm.value.password.trim().length, 'chars');
           console.log('Expected:', res.value[0].new_portalpassword.trim().length, 'chars');
-          this.loadingservice.failNotification("Your password is invalid. Please check the password length and try again.");
+          this.notificationService.showError("Your password is invalid. Please check the password length and try again.");
          }
         }
         else{
-          this.loadingservice.failNotification("Your Email Id is invalid. Please try again.");
+          this.notificationService.showError("Email address not found. Please try again with a valid email address.");
         }
         }else{
-          this.loadingservice.failNotification("Your Email Id is invalid. Please try again.");
+          this.notificationService.showError("Email address not found. Please try again with a valid email address.");
         }
        
       });
