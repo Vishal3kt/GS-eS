@@ -178,7 +178,9 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     const statuscode = Number(ticket?.statuscode);
 
     if (this.dashboardStatusFilter === 'open') {
-      return statuscode === 0;
+      // In this environment, "Open" means all active tickets (statecode=0),
+      // regardless of the granular status reason (statuscode).
+      return true;
     }
 
     if (this.dashboardStatusFilter === 'hold') {
@@ -262,15 +264,11 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           this.LoaderService.failNotification('No data available.');
         } else {
           this.data2 = [];
+          this.data3 = [];
           console.log(res.value);
           for (let i = 0; i < res.value.length; i++) {
             if (!this.shouldIncludeByDashboardFilter(res.value[i])) {
               // Skip tickets not matching dashboard selection (open/hold)
-              if ((i + 1) == res.value.length && this.data2.length === 0) {
-                this.Data = [];
-                this.dataSource.data = [];
-                this.LoaderService.close();
-              }
               continue;
             }
             let data1 = { ...res.value[i], selecteddataofbudget: '', selecteddataofcustomerreply: '' };
@@ -407,28 +405,29 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
               "Status Reason": statuscode,
               "Created On": createdon1,
               "State": statecode
-            }
+            };
             console.log(data2);
             this.data2.push(data1);
             this.data3.push(data2);
-            if ((i + 1) == res.value.length) {
-              this.Data = this.data2;
-              this.DataCSV = this.data3;
-              this.dataSource.data = this.Data;
-
-              // Ensure paginator is connected after data is loaded
-              setTimeout(() => {
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.sort = this.sort;
-              });
-
-              this.LoaderService.close();
-              // Enable the create button after data is loaded
-              this.enablebtn = true;
-            }
           }
 
+          this.Data = this.data2;
+          this.DataCSV = this.data3;
+          this.dataSource.data = this.Data;
 
+          // Ensure paginator is connected after data is loaded
+          setTimeout(() => {
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          });
+
+          this.LoaderService.close();
+          // Enable the create button after data is loaded
+          this.enablebtn = true;
+
+          if (this.data2.length === 0) {
+            this.LoaderService.failNotification('No data available.');
+          }
         }
       } else {
         this.Data = [];
