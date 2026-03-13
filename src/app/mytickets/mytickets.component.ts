@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSelectModule } from '@angular/material/select';
+import { NotificationService } from '../services/notification.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
 
@@ -79,6 +80,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   DataCSV: any;
   entitlementid: any;
   seletedrecord: any[] = [];
+  private lastAppliedDateFilterKey: string | null = null;
   new_approvedhours: any;
   new_estimatedhours: any;
   ticketnumber: any;
@@ -91,13 +93,13 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     public LoaderService: LoaderService,
     public http: HttpClient,
     public api: ApiService,
+    private notificationService: NotificationService,
     private cdr: ChangeDetectorRef) {
     this.maxDate = new Date();
     this.campaignOne = new FormGroup({
       start: new FormControl(),
       end: new FormControl()
     });
-    this.campaignOne.get('end')?.valueChanges.subscribe(() => this.onChangeEvent(null));
   }
 
   trackByEntitlementId(index: number, item: any): string {
@@ -261,7 +263,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           this.Data = [];
           this.dataSource.data = [];
           this.LoaderService.close();
-          this.LoaderService.failNotification('No data available.');
+          this.notificationService.showInfo('No data available.');
         } else {
           this.data2 = [];
           this.data3 = [];
@@ -291,7 +293,13 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
               prioritycode = "Low";
             }
             else if (res.value[i].prioritycode == 4) {
-              prioritycode = "Urgent";
+              prioritycode = "Critical";
+            }
+            else if (res.value[i].prioritycode == 5) {
+              prioritycode = "Info";
+            }
+            else {
+              prioritycode = "Medium";
             }
             let statecode = '';
             if (res.value[i].statecode == 0) {
@@ -426,7 +434,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           this.enablebtn = true;
 
           if (this.data2.length === 0) {
-            this.LoaderService.failNotification('No data available.');
+            this.notificationService.showInfo('No data available.');
           }
         }
       } else {
@@ -528,6 +536,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
                 if (this.documentattach != null) {
                   if ((i + 1) == this.filenames.length) {
                     this.loading = false;
+                    this.notificationService.showTicketCreated();
                     this.close();
                     this.ngOnInit();
                   }
@@ -543,6 +552,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           } else {
             // No files selected, just close and refresh
             this.loading = false;
+            this.notificationService.showTicketCreated();
             this.close();
             this.ngOnInit();
           }
@@ -606,7 +616,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     this.selectedstatus = ev;
     this.campaignOne.reset();
     this.closebtn = false;
-    this.ngOnInit();
+    this.fetchTickets();
   }
 
   selectrow(data: any) {
@@ -650,7 +660,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       this.Data.map((e: any) => {
         e.selected = false;
       });
-      this.LoaderService.successNotification("success");
+      this.notificationService.showTicketUpdated();
       this.enablebtn = false;
       this.close1();
       this.ngOnInit();
@@ -669,7 +679,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       this.Data.map((e: any) => {
         e.selected = false;
       });
-      this.LoaderService.successNotification("success");
+      this.notificationService.showTicketUpdated();
       this.enablebtn = false;
       this.close1();
       this.ngOnInit();
@@ -692,7 +702,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       this.filename = 'Tickets Status Reason is ' + state;
       this.downloadFile(this.DataCSV, this.filename);
     } else {
-      this.LoaderService.failNotification("No data available in table.");
+      this.notificationService.showInfo('No data available in table.');
     }
   }
 
@@ -752,7 +762,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     console.log(ev);
     console.log(this.campaignOne.value.start);
     console.log(this.campaignOne.value.end);
-    if (this.campaignOne.value.end != null) {
+    if (this.campaignOne.value.start != null && this.campaignOne.value.end != null) {
       this.closebtn = true;
       let date = new Date(this.campaignOne.value.start);
       let date1 = new Date(this.campaignOne.value.end);
@@ -762,10 +772,17 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       let enddate = date1.getFullYear() + '-' + (date1.getMonth() + 1).toString().padStart(2, "0") + '-' + date1.getDate().toString().padStart(2, "0");
       console.log(enddate);
       this.enddate = enddate;
-      this.enablebtn = false;
+
+      const filterKey = `${startdate}|${enddate}|${this.selectedstatus}`;
+      if (this.lastAppliedDateFilterKey === filterKey) {
+        return;
+      }
+      this.lastAppliedDateFilterKey = filterKey;
+
       this.LoaderService.present();
       this.Data = [];
       this.data2 = [];
+      this.data3 = [];
       this.api.startenddatefilter(this.userDetails1.email, startdate, enddate, this.selectedstatus).subscribe((res: any) => {
         console.log(res);
         if (res.value.length == 0) {
@@ -773,7 +790,12 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           this.data2 = [];
           this.dataSource.data = [];
           this.LoaderService.close();
-          this.LoaderService.failNotification('No data available.');
+          this.notificationService.showInfo('No data available for selected date range. Showing all tickets.');
+
+          this.closebtn = false;
+          this.campaignOne.reset();
+          this.lastAppliedDateFilterKey = null;
+          this.fetchTickets();
         } else {
           for (let i = 0; i < res.value.length; i++) {
             let data1 = { ...res.value[i], selecteddataofbudget: '', selecteddataofcustomerreply: '' };
@@ -795,7 +817,13 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
               prioritycode = "Low";
             }
             else if (res.value[i].prioritycode == 4) {
-              prioritycode = "Urgent";
+              prioritycode = "Critical";
+            }
+            else if (res.value[i].prioritycode == 5) {
+              prioritycode = "Info";
+            }
+            else {
+              prioritycode = "Medium";
             }
             let statecode = '';
             if (res.value[i].statecode == 0) {
@@ -885,12 +913,20 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
             }
             let createdon = new Date(res.value[i].createdon);
             let createdon1 = createdon.getFullYear() + '-' + (createdon.getMonth() + 1).toString().padStart(2, "0") + '-' + createdon.getDate().toString().padStart(2, "0");
+            
+            data1.casetype = casetype;
+            data1.priority = prioritycode;
+            data1.status = statuscode;
+            data1.state = statecode;
+            data1.createdon = createdon1;
+
+            data1.new_entitlementname = this.getEntitlementName(res.value[i]);
             let data2 = {
               "Ticket Number": res.value[i].ticketnumber,
               "Case Title": res.value[i].title,
               "Case Type": casetype,
               "Priority": prioritycode,
-              "Entitlement": res.value[i].new_entitlementname,
+              "Entitlement": data1.new_entitlementname,
               "Estimated Hours": new_estimatedhours,
               "Approved Hours": new_approvedhours,
               "Status Reason": statuscode,
@@ -907,6 +943,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
               this.Data = this.data2;
               this.DataCSV = this.data3;
               this.dataSource.data = this.Data;
+              this.enablebtn = true;
 
               // Ensure paginator is connected after data is loaded
               setTimeout(() => {
@@ -925,6 +962,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   removedates() {
     this.closebtn = false;
     this.campaignOne.reset();
+    this.lastAppliedDateFilterKey = null;
     this.ngOnInit();
   }
   updatechange(ev: any, data: any, i: any) {

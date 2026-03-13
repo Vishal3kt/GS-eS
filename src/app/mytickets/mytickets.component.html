@@ -27,8 +27,8 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="col-md-4 col-sm-12">
-          <mat-form-field appearance="outline" class="w-100">
+        <div class="col-md-5 col-sm-12">
+          <mat-form-field appearance="outline" class="w-99">
             <mat-label>Date Range</mat-label>
             <mat-date-range-input 
               [formGroup]="this.campaignOne"
@@ -36,14 +36,14 @@
               [comparisonStart]="campaignOne.value.start"
               [comparisonEnd]="campaignOne.value.end" [max]="maxDate">
               <input matStartDate placeholder="Start date" formControlName="start" >
-              <input matEndDate placeholder="End date" formControlName="end">
+              <input matEndDate placeholder="End date" formControlName="end" (dateChange)="onChangeEvent($event)">
             </mat-date-range-input> 
             <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <button mat-icon-button matSuffix *ngIf="this.closebtn" (click)="removedates()" matTooltip="Clear date filter">
+              <mat-icon>clear</mat-icon>
+            </button>
             <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
           </mat-form-field>
-          <button mat-icon-button *ngIf="this.closebtn" (click)="removedates()" matTooltip="Clear date filter">
-            <mat-icon>clear</mat-icon>
-          </button>
         </div>
         <!-- <div class="col-md-4 col-sm-12 d-flex justify-content-end">
           <button mat-raised-button (click)="download()" class="download-btn">
@@ -195,6 +195,8 @@
                                                 <mat-option value="1">High</mat-option>
                                                 <mat-option value="2">Medium</mat-option>
                                                 <mat-option value="3">Low</mat-option>
+                                                <mat-option value="4">Critical</mat-option>
+                                                <mat-option value="5">Info</mat-option>
                                               </mat-select>
                                               <mat-error *ngIf="submitted && tempData.priority.errors">
                                                 <span *ngIf="tempData.priority.errors.required">Priority is required</span>
