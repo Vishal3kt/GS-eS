@@ -49,7 +49,7 @@ export class ApiService {
     return this.http.get(url);
   }
   mytickets(email: any, code: any) {
-    let url = "" + this.apiURL + "api/data/v9.0/incidents?$filter=kkk_fromemailid eq" + " " + "'" + email + "'" + " " + "and statecode eq " + code + "&$select=createdon,caseorigincode,statecode,ticketnumber,title,casetypecode,prioritycode, _entitlementid_value,statuscode,new_entitlementname,incidentid,kkk_approvedhours,kkk_estimatedhours,new_approvedhours, new_estimatedhours, new_consumedhours, description";
+    let url = "" + this.apiURL + "api/data/v9.0/incidents?$filter=kkk_fromemailid eq" + " " + "'" + email + "'" + " " + "and statecode eq " + code + "&$select=createdon,caseorigincode,statecode,ticketnumber,title,casetypecode,prioritycode, _entitlementid_value,statuscode,new_entitlementname,incidentid,kkk_approvedhours,kkk_estimatedhours,new_approvedhours, new_estimatedhours, new_consumedhours, description&$orderby=createdon desc";
     console.log(url);
     return this.http.get(url);
   }

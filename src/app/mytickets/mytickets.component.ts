@@ -507,7 +507,8 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       "primarycontactid@odata.bind": customerid,
       "customerid_account@odata.bind": contact,
       "entitlementid@odata.bind": entitle,
-      "new_oldticketreferenceno": this.caseForm.value.oldticketno
+      "new_oldticketreferenceno": this.caseForm.value.oldticketno,
+     "kkk_fromemailid" : this.username
     }
     console.log(data);
     this.api.casecreation(this.userDetails1.token, data).subscribe((response: any) => {
