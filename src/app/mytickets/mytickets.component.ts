@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NotificationService } from '../services/notification.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 declare var window: any;
 
@@ -30,7 +31,7 @@ const year = today.getFullYear();
 @Component({
   selector: 'app-mytickets',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatSelectModule, NgxSpinnerModule, MytickteseditComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatSelectModule, NgxSpinnerModule, MatTooltipModule],
   templateUrl: './mytickets.component.html',
   styleUrls: ['./mytickets.component.scss']
 })
@@ -44,6 +45,25 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   caseForm: any = FormGroup;
   submitted = false;
   base64: string | ArrayBuffer | null | undefined;
+
+  reasonType: 'hold' | 'cancel' | null = null;
+  reasonText: string = '';
+
+  get reasonPlaceholder(): string {
+    if (this.reasonType === 'hold') {
+      return 'Explain why you are putting this ticket on hold (e.g., waiting for customer input, dependency issue...)';
+    }
+    if (this.reasonType === 'cancel') {
+      return 'Explain why you want to cancel this ticket (e.g., issue resolved, duplicate request...)';
+    }
+    return 'Enter reason...';
+  }
+
+  get reasonLabel(): string {
+    return this.reasonType === 'cancel'
+      ? 'Cancellation Reason'
+      : 'Hold Reason';
+  }
 
   selectedstatus: string = '0';
   dashboardStatusFilter: string | null = null;
@@ -170,6 +190,39 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       // Refresh list when status filter changes
       this.fetchTickets();
     });
+  }
+
+  showReasonBox(type: 'hold' | 'cancel') {
+    this.reasonType = type;
+    this.reasonText = '';
+
+    setTimeout(() => {
+      document.querySelector('textarea')?.focus();
+    }, 100);
+  }
+
+  isOverflow(element: HTMLElement): boolean {
+    return element.scrollWidth > element.clientWidth;
+  }
+
+  clearReason() {
+    this.reasonType = null;
+    this.reasonText = '';
+  }
+
+  submitReason() {
+    if (!this.reasonText.trim()) {
+      this.notificationService.showError('Reason is required');
+      return;
+    }
+
+    if (this.reasonType === 'hold') {
+      this.onhold(this.reasonText);
+    } else if (this.reasonType === 'cancel') {
+      this.oncancel(this.reasonText);
+    }
+
+    this.clearReason();
   }
 
   private shouldIncludeByDashboardFilter(ticket: any): boolean {
@@ -508,7 +561,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       "customerid_account@odata.bind": contact,
       "entitlementid@odata.bind": entitle,
       "new_oldticketreferenceno": this.caseForm.value.oldticketno,
-     "kkk_fromemailid" : this.username
+      "kkk_fromemailid": this.username
     }
     console.log(data);
     this.api.casecreation(this.userDetails1.token, data).subscribe((response: any) => {
@@ -573,11 +626,12 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
 
   close1() {
-
-    this.formModal1.hide({
-      backdrop: 'false',
-    });
+    const modal = document.getElementById('myModal1');
+    if (modal) {
+      (window as any).bootstrap.Modal.getInstance(modal)?.hide();
+    }
   }
+
   close() {
 
     this.submitted = false;
@@ -650,43 +704,65 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     // }
 
   }
-  onhold() {
+
+  onhold(reason: string) {
     this.loading1 = true;
-    console.log(this.seletedrecord[0]);
+
+    const snackRef = this.notificationService.showPersistent('Putting ticket on hold...');
+
     let statuscode = "2";
     let statecode = "0";
-    this.api.onholdorcancel(this.seletedrecord[0].incidentid, statuscode, statecode).subscribe((res: any) => {
-      console.log(res);
-      this.loading1 = false;
-      this.Data.map((e: any) => {
-        e.selected = false;
+
+    this.api.onholdorcancel(this.seletedrecord[0].incidentid, statuscode, statecode)
+      .subscribe({
+        next: (res: any) => {
+          this.loading1 = false;
+
+          snackRef.dismiss(); // ✅ close loader snackbar
+          this.notificationService.showSuccess('Ticket put on hold successfully');
+
+          this.Data.map((e: any) => e.selected = false);
+          this.enablebtn = false;
+          this.close1();
+          this.ngOnInit();
+        },
+        error: (err) => {
+          this.loading1 = false;
+
+          snackRef.dismiss();
+          this.notificationService.showErrorPersistent('Failed to put ticket on hold');
+        }
       });
-      this.notificationService.showTicketUpdated();
-      this.enablebtn = false;
-      this.close1();
-      this.ngOnInit();
-
-
-    });
   }
-  oncancel() {
+
+  oncancel(reason: string) {
     this.loading2 = true;
+
+    const snackRef = this.notificationService.showPersistent('Requesting cancellation...');
+
     let statuscode = "968590011";
     let statecode = "0";
-    console.log(this.seletedrecord[0]);
-    this.api.onholdorcancel(this.seletedrecord[0].incidentid, statuscode, statecode).subscribe((res: any) => {
-      console.log(res);
-      this.loading2 = false;
-      this.Data.map((e: any) => {
-        e.selected = false;
+
+    this.api.onholdorcancel(this.seletedrecord[0].incidentid, statuscode, statecode)
+      .subscribe({
+        next: (res: any) => {
+          this.loading2 = false;
+
+          snackRef.dismiss();
+          this.notificationService.showSuccess('Cancellation requested successfully');
+
+          this.Data.map((e: any) => e.selected = false);
+          this.enablebtn = false;
+          this.close1();
+          this.ngOnInit();
+        },
+        error: (err) => {
+          this.loading2 = false;
+
+          snackRef.dismiss();
+          this.notificationService.showErrorPersistent('Failed to request cancellation');
+        }
       });
-      this.notificationService.showTicketUpdated();
-      this.enablebtn = false;
-      this.close1();
-      this.ngOnInit();
-
-    });
-
   }
 
   download() {
@@ -914,7 +990,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
             }
             let createdon = new Date(res.value[i].createdon);
             let createdon1 = createdon.getFullYear() + '-' + (createdon.getMonth() + 1).toString().padStart(2, "0") + '-' + createdon.getDate().toString().padStart(2, "0");
-            
+
             data1.casetype = casetype;
             data1.priority = prioritycode;
             data1.status = statuscode;
@@ -996,10 +1072,10 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   }
   more(data: any) {
     this.seletedrecord = [data];
-    console.log(data);
+    console.log('Selected record:', data);
     this.ticketnumber = data.ticketnumber;
-    this.new_approvedhours = data.new_approvedhours / 60;
-    this.new_estimatedhours = data.new_estimatedhours / 60;
+    this.new_approvedhours = data.kkk_approvedhours / 60;
+    this.new_estimatedhours = data.kkk_estimatedhours / 60;
     this.Description = data.description;
     console.log(this.seletedrecord);
     // alert(data.new_approvedhours);

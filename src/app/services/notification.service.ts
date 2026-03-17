@@ -1,11 +1,29 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar) { }
+
+  showErrorPersistent(message: string): MatSnackBarRef<TextOnlySnackBar> {
+    return this.snackBar.open(message, 'Close', {
+      duration: undefined,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['error-snackbar']
+    });
+  }
+
+  showPersistent(message: string): MatSnackBarRef<TextOnlySnackBar> {
+    return this.snackBar.open(message, 'Close', {
+      duration: undefined,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['info-snackbar']
+    });
+  }
 
   showSuccess(message: string, duration: number = 3000): void {
     this.snackBar.open(message, 'Close', {

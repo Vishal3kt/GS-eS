@@ -10,12 +10,13 @@ import { ReportsComponent } from './reports/reports.component';
 import { ChangepasswordComponent } from './changepassword/changepassword.component';
 import { MytickteseditComponent } from './myticktesedit/myticktesedit.component';
 import { HomeComponent } from './home/home.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
-  { 
-    path: 'LoadingComponent', 
+  {
+    path: 'LoadingComponent',
     component: LoadingModulesComponent,
     canActivate: [RoutingguardGuard],
     children: [
@@ -28,7 +29,8 @@ export const routes: Routes = [
           { path: 'MyEntitlement', component: EntitlementComponent },
           { path: 'Reports', component: ReportsComponent },
           { path: 'ChangePassword', component: ChangepasswordComponent },
-          { path: 'EditDetails', component: MytickteseditComponent }
+          { path: 'EditDetails', component: MytickteseditComponent },
+          { path: 'Profile', component: ProfileComponent }
         ]
       }
     ]

@@ -1,3 +1,4 @@
+import { NotificationService } from './../services/notification.service';
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { LoaderService } from '../services/loader.service';
@@ -25,7 +26,7 @@ export class EntitlementComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = ['name', 'startdate', 'enddate', 'totalterms', 'remainingterms'];
 
-  constructor(public api: ApiService, public LoaderService: LoaderService) {}
+  constructor(public api: ApiService, public LoaderService: LoaderService, private NotificationService: NotificationService) { }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
@@ -56,7 +57,7 @@ export class EntitlementComponent implements OnInit, AfterViewInit {
             } else {
               this.dataSource.data = [];
               this.LoaderService.close();
-              this.LoaderService.failNotification('No entitlement data available.');
+              this.NotificationService.showError('No entitlement data available.')
             }
           });
         } else {
