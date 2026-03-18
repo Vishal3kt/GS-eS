@@ -167,6 +167,45 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
+  private loadEntitlements(parentCustomerValue: string, retryCount: number = 0): void {
+    this.api.getentitlementname(parentCustomerValue).subscribe({
+      next: (res: any) => {
+        console.log(res, "entitlement response");
+        if (res?.value && res.value.length > 0) {
+          this.Dataentitlelist = res.value;
+          this.entitlementid = res.value[0].entitlementid;
+          console.log('Dataentitlelist populated:', this.Dataentitlelist);
+          
+          // Re-map entitlement names for already-loaded tickets
+          if (this.dataSource?.data && this.dataSource.data.length > 0) {
+            this.dataSource.data = this.dataSource.data.map((t: any) => ({
+              ...t,
+              new_entitlementname: this.getEntitlementName(t)
+            }));
+            this.cdr.detectChanges();
+          }
+        } else {
+          this.Dataentitlelist = [];
+          this.entitlementid = null;
+          console.log('No entitlement data available for this customer');
+        }
+      },
+      error: (error: any) => {
+        console.error('Error loading entitlements:', error);
+        if (retryCount < 2) {
+          console.log(`Retrying entitlement load... Attempt ${retryCount + 1}`);
+          setTimeout(() => {
+            this.loadEntitlements(parentCustomerValue, retryCount + 1);
+          }, 1000);
+        } else {
+          console.error('Failed to load entitlements after 3 attempts');
+          this.Dataentitlelist = [];
+          this.entitlementid = null;
+        }
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.enablebtn = false;
     console.log(1 + 2 + 3);
@@ -277,35 +316,10 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     }
     // Only call getentitlementname if _parentcustomerid_value exists
     if (this.userDetails1.Data[0]._parentcustomerid_value) {
-      this.api.getentitlementname(this.userDetails1.Data[0]._parentcustomerid_value).subscribe((res: any) => {
-        console.log(res, "entitlement response");
-        if (res?.value && res.value.length > 0) {
-          this.Dataentitlelist = res.value;
-          this.entitlementid = res.value[0].entitlementid;
-          console.log('Dataentitlelist populated:', this.Dataentitlelist);
-        } else {
-          this.Dataentitlelist = [];
-          this.entitlementid = null;
-          console.log('No entitlement data available for this customer');
-        }
-
-        // Re-map entitlement names for already-loaded tickets
-        if (this.dataSource?.data && this.dataSource.data.length > 0) {
-          this.dataSource.data = this.dataSource.data.map((t: any) => ({
-            ...t,
-            new_entitlementname: this.getEntitlementName(t)
-          }));
-        }
-        // Force change detection
-        this.cdr.detectChanges();
-        setTimeout(() => {
-          console.log('Dataentitlelist after timeout:', this.Dataentitlelist);
-        }, 100);
-      });
+      this.loadEntitlements(this.userDetails1.Data[0]._parentcustomerid_value);
     } else {
-      this.Dataentitlelist = [];
-      this.entitlementid = null;
       console.log('No parent customer associated - skipping entitlement lookup');
+      this.entitlementid = null;
     }
 
     this.api.mytickets(this.userDetails1.email, this.selectedstatus).subscribe((res: any) => {
@@ -414,6 +428,12 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
             }
             else if (res.value[i].statuscode == 968590011) {
               statuscode = "Request for cancelation"
+            }
+            else if (res.value[i].statuscode == 968590020) {
+              statuscode = "Hold requested by customer"
+            }
+            else if (res.value[i].statuscode == 968590021) {
+              statuscode = "Cancel Request by Customer"
             }
             else if (res.value[i].statuscode == 5) {
               statuscode = "Problem Solved"
@@ -710,10 +730,14 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
     const snackRef = this.notificationService.showPersistent('Putting ticket on hold...');
 
-    let statuscode = "2";
+    let statuscode = "968590020"; // Hold requested by customer
     let statecode = "0";
 
-    this.api.onholdorcancel(this.seletedrecord[0].incidentid, statuscode, statecode)
+    // Close dialog immediately
+    this.close1();
+    this.clearReason();
+
+    this.api.holdOrCancelRequest(this.seletedrecord[0].incidentid, statuscode, statecode, reason)
       .subscribe({
         next: (res: any) => {
           this.loading1 = false;
@@ -723,14 +747,25 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
           this.Data.map((e: any) => e.selected = false);
           this.enablebtn = false;
-          this.close1();
-          this.ngOnInit();
+          
+          // Refresh ticket data to get updated status
+          this.fetchTickets();
         },
         error: (err) => {
           this.loading1 = false;
 
           snackRef.dismiss();
-          this.notificationService.showErrorPersistent('Failed to put ticket on hold');
+          console.error('Hold request error:', err);
+          
+          // Check if it's actually a success (200 OK) but treated as error
+          if (err.status === 200) {
+            this.notificationService.showSuccess('Ticket put on hold successfully');
+            this.Data.map((e: any) => e.selected = false);
+            this.enablebtn = false;
+            this.fetchTickets();
+          } else {
+            this.notificationService.showErrorPersistent('Failed to put ticket on hold');
+          }
         }
       });
   }
@@ -740,10 +775,14 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
     const snackRef = this.notificationService.showPersistent('Requesting cancellation...');
 
-    let statuscode = "968590011";
+    let statuscode = "968590021"; // Cancel Request by Customer
     let statecode = "0";
 
-    this.api.onholdorcancel(this.seletedrecord[0].incidentid, statuscode, statecode)
+    // Close dialog immediately
+    this.close1();
+    this.clearReason();
+
+    this.api.holdOrCancelRequest(this.seletedrecord[0].incidentid, statuscode, statecode, reason)
       .subscribe({
         next: (res: any) => {
           this.loading2 = false;
@@ -753,14 +792,25 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
           this.Data.map((e: any) => e.selected = false);
           this.enablebtn = false;
-          this.close1();
-          this.ngOnInit();
+          
+          // Refresh ticket data to get updated status
+          this.fetchTickets();
         },
         error: (err) => {
           this.loading2 = false;
 
           snackRef.dismiss();
-          this.notificationService.showErrorPersistent('Failed to request cancellation');
+          console.error('Cancel request error:', err);
+          
+          // Check if it's actually a success (200 OK) but treated as error
+          if (err.status === 200) {
+            this.notificationService.showSuccess('Cancellation requested successfully');
+            this.Data.map((e: any) => e.selected = false);
+            this.enablebtn = false;
+            this.fetchTickets();
+          } else {
+            this.notificationService.showErrorPersistent('Failed to request cancellation');
+          }
         }
       });
   }
@@ -961,6 +1011,12 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
             else if (res.value[i].statuscode == 968590011) {
               statuscode = "Request for cancelation"
             }
+            else if (res.value[i].statuscode == 968590020) {
+              statuscode = "Hold requested by customer"
+            }
+            else if (res.value[i].statuscode == 968590021) {
+              statuscode = "Cancel Request by Customer"
+            }
             else if (res.value[i].statuscode == 5) {
               statuscode = "Problem Solved"
             }
@@ -1054,7 +1110,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       let statuscode = ev;
       let statecode = "0";
       console.log(data);
-      this.api.onholdorcancel(data.incidentid, statuscode, statecode).subscribe((res: any) => {
+      this.api.holdOrCancelRequest(data.incidentid, statuscode, statecode, '').subscribe((res: any) => {
         console.log(res);
         this.ngOnInit();
       });
@@ -1074,8 +1130,8 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     this.seletedrecord = [data];
     console.log('Selected record:', data);
     this.ticketnumber = data.ticketnumber;
-    this.new_approvedhours = data.kkk_approvedhours / 60;
-    this.new_estimatedhours = data.kkk_estimatedhours / 60;
+    this.new_approvedhours = data.kkk_approvedhours;
+    this.new_estimatedhours = data.kkk_estimatedhours;
     this.Description = data.description;
     console.log(this.seletedrecord);
     // alert(data.new_approvedhours);

@@ -23,7 +23,7 @@
             <span class="field-value">{{profileData.firstname}} {{profileData.lastname}}</span>
           </div>
         </div>
-
+        
         <div class="profile-field">
           <mat-icon class="field-icon">email</mat-icon>
           <div class="field-content">
@@ -31,7 +31,7 @@
             <span class="field-value">{{profileData.emailaddress1}}</span>
           </div>
         </div>
-
+        
         <div class="profile-field">
           <mat-icon class="field-icon">phone</mat-icon>
           <div class="field-content">
@@ -40,6 +40,13 @@
           </div>
         </div>
 
+        <div class="profile-field">
+          <mat-icon class="field-icon">badge</mat-icon>
+          <div class="field-content">
+            <label class="field-label">Contact Id</label>
+            <span class="field-value">{{profileData.contactid || 'Not provided'}}</span>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

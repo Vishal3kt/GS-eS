@@ -277,7 +277,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       case 'high': return '#f44336';
       case 'medium': return '#ff9800';
       case 'low': return '#4caf50';
-      case 'urgent': return '#9c27b0';
+      case 'critical': return '#9c27b0';
       default: return '#757575';
     }
   }
@@ -356,7 +356,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       case 1: return "High";
       case 2: return "Medium";
       case 3: return "Low";
-      case 4: return "Urgent";
+      case 4: return "Critical";
       default: return "Medium";
     }
   }

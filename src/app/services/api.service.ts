@@ -39,7 +39,7 @@ export class ApiService {
     return this.http.get(url);
   }
   getEntitlementstep2(parentcustomerid_value: any) {
-    let url = "" + this.apiURL + "api/data/v9.0/entitlements?$filter= statuscode eq 1 and _customerid_value eq" + " " + "'" + parentcustomerid_value + "'" + "&$select=name,startdate,enddate,totalterms,remainingterms";
+    let url = "" + this.apiURL + "api/data/v9.2/entitlements?$filter= _customerid_value eq" + " " + "'" + parentcustomerid_value + "'" + "&$select=name,startdate,enddate,totalterms,remainingterms, statuscode";
     console.log(url);
     return this.http.get(url);
   }
@@ -128,6 +128,20 @@ export class ApiService {
     };
     console.log('Recent activity API URL:', url);
     console.log('Recent activity API body:', body);
+    return this.http.post(url, body);
+  }
+
+  // Hold and Cancel Request API
+  holdOrCancelRequest(incidentId: string, statusCode: string, stateCode: string, note: string) {
+    const url = "https://fb4fccab30bfec1087f97bf0e05e93.10.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c891aef3fb6f49e2aa7f16f2d4179669/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=XeLVKB7naBQ3bkwHR7iWMrxBIKx7CxUEi832EdZX-H8";
+    const body = {
+      "incidentiq": incidentId,
+      "statuscode": statusCode,
+      "statecode": stateCode,
+      "note": note
+    };
+    console.log('Hold/Cancel request API URL:', url);
+    console.log('Hold/Cancel request API body:', body);
     return this.http.post(url, body);
   }
 

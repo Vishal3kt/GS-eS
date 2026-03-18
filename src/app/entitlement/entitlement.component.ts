@@ -24,9 +24,27 @@ export class EntitlementComponent implements OnInit, AfterViewInit {
   Data: any[] = [];
   username: any;
   dataSource = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = ['name', 'startdate', 'enddate', 'totalterms', 'remainingterms'];
+  displayedColumns: string[] = ['name', 'startdate', 'enddate', 'totalterms', 'remainingterms', 'status'];
 
   constructor(public api: ApiService, public LoaderService: LoaderService, private NotificationService: NotificationService) { }
+
+  // Helper function to map status codes to status names
+  getStatusName(statusCode: number): string {
+    switch (statusCode) {
+      case 0:
+        return 'Draft';
+      case 1:
+        return 'Active';
+      case 2:
+        return 'Cancelled';
+      case 3:
+        return 'Expired';
+      case 4:
+        return 'Waiting';
+      default:
+        return 'Unknown';
+    }
+  }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;

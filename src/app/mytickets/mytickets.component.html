@@ -117,6 +117,8 @@
                 </select>
               </div>
               <p *ngIf="data.statuscode==968590011">Request for cancelation</p>
+              <p *ngIf="data.statuscode==968590020">Hold requested by customer</p>
+              <p *ngIf="data.statuscode==968590021">Cancel Request by Customer</p>
             </div>
             <div *ngIf="data.statecode==1">
               <p *ngIf="data.statuscode==5">Problem Solved</p>
@@ -183,10 +185,10 @@
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>Severity Level</mat-label>
                   <mat-select formControlName="priority">
-                    <mat-option value="1">High</mat-option>
-                    <mat-option value="2">Medium</mat-option>
-                    <mat-option value="3">Low</mat-option>
-                    <mat-option value="4">Critical</mat-option>
+                    <mat-option value="1">Critical</mat-option>
+                    <mat-option value="2">High</mat-option>
+                    <mat-option value="3">Medium</mat-option>
+                    <mat-option value="4">Low</mat-option>
                     <mat-option value="5">Info</mat-option>
                   </mat-select>
                   <mat-error *ngIf="submitted && tempData.priority.errors">
