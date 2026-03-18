@@ -142,7 +142,9 @@ export class ApiService {
     };
     console.log('Hold/Cancel request API URL:', url);
     console.log('Hold/Cancel request API body:', body);
-    return this.http.post(url, body);
+    
+    // Use responseType: 'text' to handle plain text responses from Power Automate
+    return this.http.post(url, body, { responseType: 'text' });
   }
 
 

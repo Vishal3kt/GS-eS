@@ -743,13 +743,21 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           this.loading1 = false;
 
           snackRef.dismiss(); // ✅ close loader snackbar
-          this.notificationService.showSuccess('Ticket put on hold successfully');
-
-          this.Data.map((e: any) => e.selected = false);
-          this.enablebtn = false;
           
-          // Refresh ticket data to get updated status
-          this.fetchTickets();
+          // Handle text response from Power Automate
+          const responseText = typeof res === 'string' ? res : res?.toString();
+          console.log('Hold request response:', responseText);
+          
+          if (responseText && responseText.includes('Status Updated')) {
+            this.notificationService.showSuccess('Ticket put on hold successfully');
+            this.Data.map((e: any) => e.selected = false);
+            this.enablebtn = false;
+            
+            // Refresh ticket data to get updated status
+            this.fetchTickets();
+          } else {
+            this.notificationService.showErrorPersistent('Failed to put ticket on hold');
+          }
         },
         error: (err) => {
           this.loading1 = false;
@@ -788,13 +796,21 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           this.loading2 = false;
 
           snackRef.dismiss();
-          this.notificationService.showSuccess('Cancellation requested successfully');
-
-          this.Data.map((e: any) => e.selected = false);
-          this.enablebtn = false;
           
-          // Refresh ticket data to get updated status
-          this.fetchTickets();
+          // Handle text response from Power Automate
+          const responseText = typeof res === 'string' ? res : res?.toString();
+          console.log('Cancel request response:', responseText);
+          
+          if (responseText && responseText.includes('Status Updated')) {
+            this.notificationService.showSuccess('Cancellation requested successfully');
+            this.Data.map((e: any) => e.selected = false);
+            this.enablebtn = false;
+            
+            // Refresh ticket data to get updated status
+            this.fetchTickets();
+          } else {
+            this.notificationService.showErrorPersistent('Failed to request cancellation');
+          }
         },
         error: (err) => {
           this.loading2 = false;
@@ -1111,8 +1127,13 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       let statecode = "0";
       console.log(data);
       this.api.holdOrCancelRequest(data.incidentid, statuscode, statecode, '').subscribe((res: any) => {
-        console.log(res);
-        this.ngOnInit();
+        console.log('Status update response:', res);
+        
+        // Handle text response from Power Automate
+        const responseText = typeof res === 'string' ? res : res?.toString();
+        
+        // Always refresh tickets on status update regardless of response format
+        this.fetchTickets();
       });
     }
   }
