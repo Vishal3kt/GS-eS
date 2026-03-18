@@ -27,7 +27,9 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "stylePreprocessorOptions": {
-              "includePaths": ["node_modules"]
+              "includePaths": [
+                "node_modules"
+              ]
             },
             "allowedCommonJsDependencies": [
               "sweetalert2"
@@ -42,10 +44,6 @@
               "src/styles.scss",
               "node_modules/ngx-spinner/animations/square-loader.css",
               "node_modules/sweetalert2/src/sweetalert2.scss"
-
-             
-
-              
             ],
             "scripts": []
           },
@@ -77,7 +75,19 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "10kb",
+                  "maximumError": "12kb"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
