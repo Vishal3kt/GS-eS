@@ -11,7 +11,7 @@
             <!-- Navigation Menu -->
             <nav class="sidebar-nav">
                 <ul class="nav-menu">
-                    <li class="nav-item" [routerLinkActive]="['active']" *ngFor="let data of navItem">
+                    <li class="nav-item" [class.active]="data.selected === 'true'" *ngFor="let data of navItem">
                         <a routerLink="{{data.path}}" class="nav-link">
                             <mat-icon class="nav-icon">{{data.icon}}</mat-icon>
                             <span class="nav-text">{{data.name}}</span>

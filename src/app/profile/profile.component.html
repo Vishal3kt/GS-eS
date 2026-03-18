@@ -1,1 +1,65 @@
-<p>profile works!</p>
+<div class="profile-container">
+  <div class="profile-header">
+    <h1 class="profile-title">My Profile</h1>
+    <!-- <button mat-raised-button class="refresh-btn" (click)="loadProfile()" [disabled]="isLoading">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button> -->
+  </div>
+
+  <div class="profile-content" *ngIf="!isLoading; else loadingTemplate">
+    <mat-card class="profile-card">
+      <mat-card-header class="profile-card-header">
+        <mat-card-title class="profile-card-title">
+          <mat-icon class="profile-icon">person</mat-icon>
+          Personal Information
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="profile-card-content">
+        <div class="profile-field">
+          <mat-icon class="field-icon">badge</mat-icon>
+          <div class="field-content">
+            <label class="field-label">Name</label>
+            <span class="field-value">{{profileData.firstname}} {{profileData.lastname}}</span>
+          </div>
+        </div>
+        
+        <div class="profile-field">
+          <mat-icon class="field-icon">email</mat-icon>
+          <div class="field-content">
+            <label class="field-label">Email</label>
+            <span class="field-value">{{profileData.emailaddress1}}</span>
+          </div>
+        </div>
+        
+        <div class="profile-field">
+          <mat-icon class="field-icon">phone</mat-icon>
+          <div class="field-content">
+            <label class="field-label">Mobile</label>
+            <span class="field-value">{{profileData.mobilephone || 'Not provided'}}</span>
+          </div>
+        </div>
+
+        <div class="profile-field">
+          <mat-icon class="field-icon">badge</mat-icon>
+          <div class="field-content">
+            <label class="field-label">Contact Id</label>
+            <span class="field-value">{{profileData.contactid || 'Not provided'}}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <mat-card class="loading-card">
+        <mat-card-content class="loading-content">
+          <div class="loading-skeleton"></div>
+          <div class="loading-skeleton"></div>
+          <div class="loading-skeleton"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-template>
+</div>

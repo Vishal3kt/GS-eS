@@ -27,49 +27,61 @@ export class LoadingModulesComponent implements OnInit {
   constructor(public router: Router) {
 
     this.router.events.subscribe((event: any) => {
+      console.log('Router event:', event);
       if (event instanceof NavigationEnd) {
         this.currentUrl = event.urlAfterRedirects;
-        console.log(event.urlAfterRedirects);
-        if (this.currentUrl.includes("/LoadingComponent/Dashboard")) {
-          this.navItem[0].selected = "true";
-          this.navItem[1].selected = "true";
-          this.navItem[2].selected = "true";
-          this.navItem[3].selected = "true";
-          this.navItem[4].selected = "true";
+        console.log('Current URL:', this.currentUrl);
 
+        // Check for EditDetails first (more specific)
+        if (this.currentUrl.includes("/LoadingComponent/EditDetails")) {
+          console.log('Setting EditDetails active state - URL matched');
+          console.log('Current navItem states before:', this.navItem.map(item => ({ name: item.name, selected: item.selected })));
+          this.navItem[0].selected = "false";  // Dashboard
+          this.navItem[1].selected = "false";  // My Entitlement
+          this.navItem[2].selected = "true";   // My Ticket active
+          this.navItem[3].selected = "false";  // Reports
+          this.navItem[4].selected = "false";  // Profile
+          console.log('Current navItem states after:', this.navItem.map(item => ({ name: item.name, selected: item.selected })));
+        }
+        else if (this.currentUrl.includes("/LoadingComponent/Dashboard")) {
+          this.navItem[0].selected = "true";   // Dashboard active
+          this.navItem[1].selected = "false";  // My Entitlement
+          this.navItem[2].selected = "false";  // My Ticket
+          this.navItem[3].selected = "false";  // Reports
+          this.navItem[4].selected = "false";  // Profile
         } else if (this.currentUrl.includes("/LoadingComponent/MyEntitlement")) {
-          this.navItem[0].selected = "false";
-          this.navItem[1].selected = "false";
-          this.navItem[2].selected = "true";
-          this.navItem[3].selected = "true";
-          this.navItem[4].selected = "true";
+          this.navItem[0].selected = "false";  // Dashboard
+          this.navItem[1].selected = "true";   // My Entitlement active
+          this.navItem[2].selected = "false";  // My Ticket
+          this.navItem[3].selected = "false";  // Reports
+          this.navItem[4].selected = "false";  // Profile
         }
         else if (this.currentUrl.includes("/LoadingComponent/Myticket")) {
-          this.navItem[0].selected = "false";
-          this.navItem[1].selected = "true";
-          this.navItem[2].selected = "false";
-          this.navItem[3].selected = "true";
-          this.navItem[4].selected = "true";
+          this.navItem[0].selected = "false";  // Dashboard
+          this.navItem[1].selected = "false";  // My Entitlement
+          this.navItem[2].selected = "true";   // My Ticket active
+          this.navItem[3].selected = "false";  // Reports
+          this.navItem[4].selected = "false";  // Profile
         }
         else if (this.currentUrl.includes("/LoadingComponent/Reports")) {
-          this.navItem[0].selected = "false";
-          this.navItem[1].selected = "true";
-          this.navItem[2].selected = "true";
-          this.navItem[3].selected = "false";
-          this.navItem[4].selected = "true";
+          this.navItem[0].selected = "false";  // Dashboard
+          this.navItem[1].selected = "false";  // My Entitlement
+          this.navItem[2].selected = "false";  // My Ticket
+          this.navItem[3].selected = "true";   // Reports active
+          this.navItem[4].selected = "false";  // Profile
         }
         else if (this.currentUrl.includes("/LoadingComponent/Profile")) {
-          this.navItem[0].selected = "false";
-          this.navItem[1].selected = "true";
-          this.navItem[2].selected = "true";
-          this.navItem[3].selected = "false";
-          this.navItem[4].selected = "true";
+          this.navItem[0].selected = "false";  // Dashboard
+          this.navItem[1].selected = "false";  // My Entitlement
+          this.navItem[2].selected = "false";  // My Ticket
+          this.navItem[3].selected = "false";  // Reports
+          this.navItem[4].selected = "true";   // Profile active
         } else {
           this.navItem[0].selected = "false";
-          this.navItem[1].selected = "true";
-          this.navItem[2].selected = "true";
-          this.navItem[3].selected = "true";
-          this.navItem[4].selected = "true";
+          this.navItem[1].selected = "false";
+          this.navItem[2].selected = "false";
+          this.navItem[3].selected = "false";
+          this.navItem[4].selected = "false";
         }
       }
     })

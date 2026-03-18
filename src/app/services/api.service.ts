@@ -48,6 +48,18 @@ export class ApiService {
     console.log(url);
     return this.http.get(url);
   }
+  
+  getProfile(email?: string) {
+    const userEmail = email || this.getUserEmail();
+    let url = "" + this.apiURL + "api/data/v9.2/contacts?$filter=new_portallogin eq true and emailaddress1 eq '" + userEmail + "' and statuscode eq 1&$select=firstname,lastname,mobilephone,emailaddress1";
+    console.log(url);
+    return this.http.get(url);
+  }
+  
+  private getUserEmail(): string {
+    // Try to get email from localStorage or sessionStorage
+    return localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail') || '3KT@test.com';
+  }
   mytickets(email: any, code: any) {
     let url = "" + this.apiURL + "api/data/v9.0/incidents?$filter=kkk_fromemailid eq" + " " + "'" + email + "'" + " " + "and statecode eq " + code + "&$select=createdon,caseorigincode,statecode,ticketnumber,title,casetypecode,prioritycode, _entitlementid_value,statuscode,new_entitlementname,incidentid,kkk_approvedhours,kkk_estimatedhours,new_approvedhours, new_estimatedhours, new_consumedhours, description&$orderby=createdon desc";
     console.log(url);
