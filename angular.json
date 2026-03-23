@@ -27,7 +27,9 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "stylePreprocessorOptions": {
-              "includePaths": ["node_modules"]
+              "includePaths": [
+                "node_modules"
+              ]
             },
             "allowedCommonJsDependencies": [
               "sweetalert2"
@@ -42,10 +44,6 @@
               "src/styles.scss",
               "node_modules/ngx-spinner/animations/square-loader.css",
               "node_modules/sweetalert2/src/sweetalert2.scss"
-
-             
-
-              
             ],
             "scripts": []
           },
@@ -122,7 +120,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/staticwebapps.config.json"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
