@@ -1,4 +1,13 @@
 {
+    "globalHeaders": {
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff"
+    },
+    "mimeTypes": {
+        ".json": "application/json",
+        ".js": "application/javascript",
+        ".css": "text/css"
+    },
     "navigationFallback": {
         "rewrite": "/index.html",
         "exclude": [
@@ -7,7 +16,16 @@
             "/*.js",
             "/*.png",
             "/*.jpg",
-            "/*.ico"
+            "/*.jpeg",
+            "/*.gif",
+            "/*.ico",
+            "/*.svg",
+            "/*.woff",
+            "/*.woff2",
+            "/*.ttf",
+            "/*.eot",
+            "/*.map"
         ]
-    }
+    },
+    "trailingSlash": "never"
 }
