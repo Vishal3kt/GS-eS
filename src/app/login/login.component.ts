@@ -67,19 +67,10 @@ export class LoginComponent implements OnInit {
     // DISABLED: Using global loader instead
     // this.loading=true;
     this.api.tokengeneration().subscribe((resToken:any)=>{
-      console.log('Token response:', resToken);
       // Store token in sessionStorage for interceptor to use
       sessionStorage.setItem('token', resToken.access_token);
-      console.log('Token stored in sessionStorage:', resToken.access_token);
       
       this.api.generatepassword(this.loginForm.value.email).subscribe((res:any)=>{
-        console.log('API Response:', res); 
-        console.log('User Password:', this.loginForm.value.password);
-        console.log('Stored Password:', res.value[0].new_portalpassword);
-        console.log('User Password Trimmed:', this.loginForm.value.password.trim());
-        console.log('Stored Password Trimmed:', res.value[0].new_portalpassword.trim());
-        console.log('Password Match (Trimmed):', this.loginForm.value.password.trim() == res.value[0].new_portalpassword.trim());
-        console.log('Password Match (Case Insensitive):', this.loginForm.value.password.toLowerCase() == res.value[0].new_portalpassword.toLowerCase());
         
         if(res!=undefined){
           if(res.value.length!=0){
@@ -103,16 +94,12 @@ export class LoginComponent implements OnInit {
           this.notificationService.showLoginSuccess(this.loginForm.value.email);
           this.router.navigate(["/LoadingComponent"]);
          }else{
-          console.log('Password length mismatch:');
-          console.log('Entered:', this.loginForm.value.password.trim().length, 'chars');
-          console.log('Expected:', res.value[0].new_portalpassword.trim().length, 'chars');
           this.notificationService.showError("Your password is invalid. Please check the password length and try again.");
          }
         }
         else{
           this.notificationService.showError("Email address not found. Please try again with a valid email address.");
         }
-        }else{
           this.notificationService.showError("Email address not found. Please try again with a valid email address.");
         }
        
@@ -122,7 +109,6 @@ export class LoginComponent implements OnInit {
    
   }
   checkValue(event: any){
-    console.log(event.checked);
     if(event.checked == true){
       this.savedata="local";
     }else{

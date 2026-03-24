@@ -56,9 +56,7 @@ export class MytickteseditComponent implements OnInit {
 
 
     this.route.queryParams.subscribe((res: any) => {
-      console.log(res);
       this.datafinal = JSON.parse(res.Data);
-      console.log(this.datafinal, "this.datafinal");
       const ticket = Array.isArray(this.datafinal) ? this.datafinal[0] : this.datafinal;
       this.caseForm = this.formBuilder.group({
         casetitle: [ticket?.title || '', [Validators.required]],
@@ -74,7 +72,6 @@ export class MytickteseditComponent implements OnInit {
       this.caseForm.controls['priority'].disable();
       this.caseForm.controls['entitlement'].disable();
       this.caseForm.controls['discription'].disable();
-
 
     });
     this.commentform = this.formBuilder.group({
@@ -95,7 +92,6 @@ export class MytickteseditComponent implements OnInit {
     if (this.userDetails == undefined || this.userDetails == '' || this.userDetails == null) {
       this.userDetails = localStorage.getItem("loginDetails");
       this.userDetails1 = JSON.parse(this.userDetails);
-      console.log(this.userDetails1);
       this.username = this.userDetails1.email;
       this.displayname = this.userDetails1.Data[0].fullname;
       let string = this.displayname;
@@ -107,7 +103,6 @@ export class MytickteseditComponent implements OnInit {
       this.displayshortname = this.firstletter + this.secondletter;
     } else {
       this.userDetails1 = JSON.parse(this.userDetails);
-      console.log(this.userDetails1);
       this.username = this.userDetails1.email;
       this.displayname = this.userDetails1.Data[0].fullname;
       let string = this.displayname;
@@ -120,13 +115,10 @@ export class MytickteseditComponent implements OnInit {
     }
     this.api.getentitlementname(this.userDetails1.Data[0]._parentcustomerid_value)
       .subscribe((res: any) => {
-        console.log(res, "name");
-
         if (res?.value?.length > 0) {
           this.Dataentitlelist = res.value;
           this.entitlementid = res.value[0].entitlementid;
         } else {
-          console.warn("No entitlement data found");
           this.Dataentitlelist = [];
           this.entitlementid = null;
         }
@@ -182,7 +174,6 @@ export class MytickteseditComponent implements OnInit {
 
           await this.api.documentupload(this.userDetails1.token, data)
             .subscribe((res: any) => {
-              console.log(res, "res");
               this.loading = false;
               this.commentboxshow = false;
 
@@ -204,7 +195,6 @@ export class MytickteseditComponent implements OnInit {
         }
         this.api.documentupload(this.userDetails1.token, data)
           .subscribe((res: any) => {
-            console.log(res, "res");
             this.loading = false;
             this.commentboxshow = false;
             this.ngOnInit();
@@ -223,7 +213,6 @@ export class MytickteseditComponent implements OnInit {
   pdfOnload(event: any) {
 
     const file = event.target.files[0];
-    console.log(file);
     if (!file) {
       return;
     }
@@ -231,29 +220,19 @@ export class MytickteseditComponent implements OnInit {
     const reader: any = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      console.log(reader.result);
       this.base64 = reader.result;
       var base64result = reader.result.split(';base64,')[0];
       this.base64result1 = reader.result.split(';base64,')[1];
       this.filenames.push({ name: file.name, base64: this.base64result1 });
-      console.log(this.filenames);
       // Reset input so selecting the same file again triggers (change)
       if (event?.target) {
         event.target.value = '';
       }
-      //  alert("hi");
-      //  console.log(event.target.files[0].type);
-      //  console.log(event.target.files);
-
-      //  var blob = new Blob(event.target.files, { type: event.target.files[0].type });
-
-      //  var url = window.URL.createObjectURL(blob);
     };
 
   }
   removedata(data: any, i: any) {
     this.filenames.splice(i, 1);
-    console.log(this.filenames);
     // Reset input so selecting the same file again triggers (change)
     if (this.fileInput?.nativeElement) {
       this.fileInput.nativeElement.value = '';
@@ -262,7 +241,6 @@ export class MytickteseditComponent implements OnInit {
   openfile(data: any) {
     const fileName = data.filename;
     let newfilename = fileName.split(".");
-    console.log(newfilename[1]);
     let fileaddbefore;
     if (newfilename[1] == "docx") {
       fileaddbefore = "data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,"

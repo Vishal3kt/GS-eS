@@ -504,9 +504,9 @@ p {
   border: 1px solid #ccc !important;
 }
 
-::ng-deep .mat-elevation-z2 {
-  box-shadow: none !important;
-}
+// ::ng-deep .mat-elevation-z2 {
+//   box-shadow: none !important;
+// }
 
 ::ng-deep .mat-calendar-table-header th {
   padding: 0px !important;
@@ -1272,4 +1272,9 @@ table {
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+}
+
+.mat-cell{
+  border-left: 1px solid #ccc !important;
+  border-right: 1px solid #ccc !important;
 }

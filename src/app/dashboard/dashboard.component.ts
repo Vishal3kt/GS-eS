@@ -65,14 +65,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         try {
           const parsedData = JSON.parse(loginDetails);
           userEmail = parsedData.email || parsedData.Data?.[0]?.emailaddress1;
-          console.log('Dashboard - Retrieved from loginDetails:', parsedData);
         } catch (e) {
           console.error('Error parsing login details:', e);
         }
       }
     }
-
-    console.log('Dashboard - Retrieved user email:', userEmail);
 
     if (!userEmail) {
       console.error('No user email found in storage');
@@ -91,7 +88,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   loadDashboardCounts(email: string): void {
     this.apiService.getDashboardCounts(email).subscribe({
       next: (response: any) => {
-        console.log('Dashboard counts response:', response);
         this.mapDashboardCounts(response);
         this.isLoadingCounts = false;
         // Trigger animation after data is loaded
@@ -112,7 +108,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   loadRecentActivity(email: string): void {
     this.apiService.getRecentActivity(email).subscribe({
       next: (response: any) => {
-        console.log('Recent activity response:', response);
         this.mapRecentActivity(response);
         this.isLoadingActivity = false;
       },
@@ -127,8 +122,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   mapDashboardCounts(response: any): void {
-    console.log('Raw dashboard counts response:', response);
-
     // Map API response to ticket stats
     // API returns lowercase keys: open, resolved, cancel, hold
     if (response && response.open !== undefined) {
@@ -144,11 +137,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ticketStats[3].targetCount = parseInt(response.resolved) || 0; // RESOLVED
     }
 
-    console.log('Mapped ticket stats:', this.ticketStats);
   }
 
   mapRecentActivity(response: any): void {
-    console.log('Raw recent activity response:', response);
 
     // Initialize with empty array
     this.recentActivities = [];
@@ -181,8 +172,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           fullCustomer: item.Customer || item.customer || item._customerid_value || 'N/A'
         }));
     }
-
-    console.log('Mapped recent activities (limited to 3):', this.recentActivities);
   }
 
   setDefaultCounts(): void {

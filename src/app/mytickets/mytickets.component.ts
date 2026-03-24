@@ -120,6 +120,8 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       start: new FormControl(),
       end: new FormControl()
     });
+    // Initialize empty data source to ensure table displays properly
+    this.dataSource.data = [];
   }
 
   trackByEntitlementId(index: number, item: any): string {
@@ -170,11 +172,9 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   private loadEntitlements(parentCustomerValue: string, retryCount: number = 0): void {
     this.api.getentitlementname(parentCustomerValue).subscribe({
       next: (res: any) => {
-        console.log(res, "entitlement response");
         if (res?.value && res.value.length > 0) {
           this.Dataentitlelist = res.value;
           this.entitlementid = res.value[0].entitlementid;
-          console.log('Dataentitlelist populated:', this.Dataentitlelist);
           
           // Re-map entitlement names for already-loaded tickets
           if (this.dataSource?.data && this.dataSource.data.length > 0) {
@@ -187,18 +187,14 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
         } else {
           this.Dataentitlelist = [];
           this.entitlementid = null;
-          console.log('No entitlement data available for this customer');
         }
       },
       error: (error: any) => {
-        console.error('Error loading entitlements:', error);
         if (retryCount < 2) {
-          console.log(`Retrying entitlement load... Attempt ${retryCount + 1}`);
           setTimeout(() => {
             this.loadEntitlements(parentCustomerValue, retryCount + 1);
           }, 1000);
         } else {
-          console.error('Failed to load entitlements after 3 attempts');
           this.Dataentitlelist = [];
           this.entitlementid = null;
         }
@@ -207,8 +203,7 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.enablebtn = false;
-    console.log(1 + 2 + 3);
+    this.enablebtn = true;
 
     // Dashboard status filter (e.g. ?status=open)
     this.route.queryParams.subscribe((params: any) => {
@@ -304,11 +299,9 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
     this.LoaderService.present();
     this.userDetails = sessionStorage.getItem("loginDetails");
-    console.log(this.userDetails);
     if (this.userDetails == undefined || this.userDetails == '' || this.userDetails == null) {
       this.userDetails = localStorage.getItem("loginDetails");
       this.userDetails1 = JSON.parse(this.userDetails);
-      console.log(this.userDetails1);
       this.username = this.userDetails1.email;
     } else {
       this.userDetails1 = JSON.parse(this.userDetails);
@@ -318,13 +311,12 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     if (this.userDetails1.Data[0]._parentcustomerid_value) {
       this.loadEntitlements(this.userDetails1.Data[0]._parentcustomerid_value);
     } else {
-      console.log('No parent customer associated - skipping entitlement lookup');
       this.entitlementid = null;
     }
 
     this.api.mytickets(this.userDetails1.email, this.selectedstatus).subscribe((res: any) => {
-      console.log(res);
       this.Data = [];
+      this.dataSource.data = [];
       if (res != undefined || res != null || res != '') {
         if (res.value.length == 0) {
           this.Data = [];
@@ -334,7 +326,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
         } else {
           this.data2 = [];
           this.data3 = [];
-          console.log(res.value);
           for (let i = 0; i < res.value.length; i++) {
             if (!this.shouldIncludeByDashboardFilter(res.value[i])) {
               // Skip tickets not matching dashboard selection (open/hold)
@@ -487,7 +478,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
               "Created On": createdon1,
               "State": statecode
             };
-            console.log(data2);
             this.data2.push(data1);
             this.data3.push(data2);
           }
@@ -547,12 +537,10 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     }
     else {
       this.loading = true;
-      console.log(this.caseForm.value);
       if (this.caseForm.value.oldticketno == null || this.caseForm.value.oldticketno == '') {
         this.afterticketvalidation();
       } else {
         this.api.ticktetvalidation(this.caseForm.value.oldticketno, this.userDetails1.Data[0]._parentcustomerid_value).subscribe((res: any) => {
-          console.log(res);
           if (res.value.length == 0) {
             this.loading = false;
             this.LoaderService.failNotification('Your entered ticket number is invalid. Please check once.')
@@ -567,7 +555,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   }
 
   afterticketvalidation() {
-    console.log(this.caseForm.value);
     let entitle = '/entitlements(' + this.caseForm.value.entitlement + ')';
     let customerid = '/accounts(' + this.userDetails1.Data[0].contactid + ')';
     let contact = '/contacts(' + this.userDetails1.Data[0]._parentcustomerid_value + ')';
@@ -583,12 +570,8 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       "new_oldticketreferenceno": this.caseForm.value.oldticketno,
       "kkk_fromemailid": this.username
     }
-    console.log(data);
     this.api.casecreation(this.userDetails1.token, data).subscribe((response: any) => {
       if (response) {
-        console.clear();
-        console.log(response, "response");
-        console.log(response.headers.get('odata-entityid'));
         this.documentuploadid = response.headers.get('odata-entityid');
         if (this.documentuploadid != null) {
           let data = this.documentuploadid.split('incidents(')[1];
@@ -605,7 +588,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
                 "objectid_incident@odata.bind": '/incidents(' + objectid_incident + ')'
               };
               this.api.documentupload(this.userDetails1.token, formdata).subscribe((resattach: any) => {
-                console.log(resattach);
                 this.documentattach = resattach.headers.get('odata-entityid');
                 if (this.documentattach != null) {
                   if ((i + 1) == this.filenames.length) {
@@ -663,7 +645,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   pdfOnload(event: any) {
 
     const file = event.target.files[0];
-    console.log(file);
     if (!file) {
       return;
     }
@@ -671,23 +652,18 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     const reader: any = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      console.log(reader.result);
       this.base64 = reader.result;
       var base64result = reader.result.split(';base64,')[0];
       this.base64result1 = reader.result.split(';base64,')[1];
       this.filenames.push({ name: file.name, base64: this.base64result1 });
-      console.log(this.filenames);
       // Reset input so selecting the same file again triggers (change)
       if (event?.target) {
         event.target.value = '';
       }
-      //  console.log(base64result,"bhavanibase64");         
-      //  console.log(this.base64result1);
     };
   }
 
   statuscode(ev: any) {
-    console.log(ev);
     this.selectedstatus = ev;
     this.campaignOne.reset();
     this.closebtn = false;
@@ -746,7 +722,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           
           // Handle text response from Power Automate
           const responseText = typeof res === 'string' ? res : res?.toString();
-          console.log('Hold request response:', responseText);
           
           if (responseText && responseText.includes('Status Updated')) {
             this.notificationService.showSuccess('Ticket put on hold successfully');
@@ -799,7 +774,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
           
           // Handle text response from Power Automate
           const responseText = typeof res === 'string' ? res : res?.toString();
-          console.log('Cancel request response:', responseText);
           
           if (responseText && responseText.includes('Status Updated')) {
             this.notificationService.showSuccess('Cancellation requested successfully');
@@ -854,7 +828,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
 
     let date = filename;
     let csvData = this.ConvertToCSV(data, ['Ticket Number', 'Case Title', 'Case Type', 'Priority', 'Entitlement', 'Estimated Hours', 'Approved Hours', 'Status Reason', 'Created On', 'State']);
-    console.log(csvData);
     let blob;
     if (date == '') {
       blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
@@ -865,7 +838,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     }
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
-    console.log(url);
     let isSafariBrowser = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
     if (isSafariBrowser) {  //if Safari open in new window to save file with random filename.
       dwldLink.setAttribute("target", "_blank");
@@ -887,33 +859,25 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     }
     row = row.slice(0, -1);
     str += row + '\r\n';
-    console.log(str);
     for (let i = 0; i < array.length; i++) {
       let line = (i + 1) + '';
       for (let index in headerList) {
         let head = headerList[index];
-        console.log(head);
         line += ',' + array[i][head];
       }
       str += line + '\r\n';
     }
-    console.log(str);
     return str;
 
   }
   onChangeEvent(ev: any) {
-    console.log(ev);
-    console.log(this.campaignOne.value.start);
-    console.log(this.campaignOne.value.end);
     if (this.campaignOne.value.start != null && this.campaignOne.value.end != null) {
       this.closebtn = true;
       let date = new Date(this.campaignOne.value.start);
       let date1 = new Date(this.campaignOne.value.end);
       let startdate = date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, "0") + '-' + date.getDate().toString().padStart(2, "0");
-      console.log(startdate);
       this.Fromdate = startdate;
       let enddate = date1.getFullYear() + '-' + (date1.getMonth() + 1).toString().padStart(2, "0") + '-' + date1.getDate().toString().padStart(2, "0");
-      console.log(enddate);
       this.enddate = enddate;
 
       const filterKey = `${startdate}|${enddate}|${this.selectedstatus}`;
@@ -927,7 +891,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
       this.data2 = [];
       this.data3 = [];
       this.api.startenddatefilter(this.userDetails1.email, startdate, enddate, this.selectedstatus).subscribe((res: any) => {
-        console.log(res);
         if (res.value.length == 0) {
           this.Data = [];
           this.data2 = [];
@@ -1083,7 +1046,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
               "State": statecode
             }
 
-            console.log(data1);
             this.data2.push(data1);
             this.data3.push(data2);
 
@@ -1115,19 +1077,14 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
     this.ngOnInit();
   }
   updatechange(ev: any, data: any, i: any) {
-    console.log(ev);
     this.selecteddataofbudget = ev;
     this.updatechange1(ev, data, i);
   }
   updatechange1(ev: any, data: any, i: any) {
-    console.log(ev, data);
     if (this.selecteddataofbudget != '') {
-      console.log(ev);
       let statuscode = ev;
       let statecode = "0";
-      console.log(data);
       this.api.holdOrCancelRequest(data.incidentid, statuscode, statecode, '').subscribe((res: any) => {
-        console.log('Status update response:', res);
         
         // Handle text response from Power Automate
         const responseText = typeof res === 'string' ? res : res?.toString();
@@ -1149,12 +1106,10 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   }
   more(data: any) {
     this.seletedrecord = [data];
-    console.log('Selected record:', data);
     this.ticketnumber = data.ticketnumber;
     this.new_approvedhours = data.kkk_approvedhours;
     this.new_estimatedhours = data.kkk_estimatedhours;
     this.Description = data.description;
-    console.log(this.seletedrecord);
     // alert(data.new_approvedhours);
     // alert(this.new_approvedhours);
     // setTimeout(()=>{
@@ -1180,7 +1135,6 @@ export class MyticketsComponent implements OnInit, AfterViewInit {
   }
   removedata(data: any, i: any) {
     this.filenames.splice(i, 1);
-    console.log(this.filenames);
     // Reset input so selecting the same file again triggers (change)
     if (this.fileInput?.nativeElement) {
       this.fileInput.nativeElement.value = '';

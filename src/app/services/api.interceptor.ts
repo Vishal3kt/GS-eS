@@ -30,8 +30,6 @@ export class ApiInterceptor implements HttpInterceptor {
     
     // Add authorization header if token exists and not a token generation request
     const token = sessionStorage.getItem('token') || localStorage.getItem('token');
-    console.log('Interceptor - Token found:', !!token);
-    console.log('Interceptor - Request URL:', req.url);
     
     // Don't add any headers to Power Automate workflows - let them pass through untouched
     const isPowerAutomateRequest = req.url.includes('powerautomate') || 
@@ -41,7 +39,6 @@ export class ApiInterceptor implements HttpInterceptor {
     
     if (isPowerAutomateRequest) {
       // Power Automate requests should pass through without any modifications
-      console.log('Interceptor - Power Automate request detected, passing through unchanged');
       return next.handle(req);
     }
     
@@ -49,11 +46,6 @@ export class ApiInterceptor implements HttpInterceptor {
       authReq = req.clone({
         headers: req.headers.set('Authorization', `Bearer ${token}`)
       });
-      console.log('Interceptor - Added Dynamics Authorization header:', `Bearer ${token.substring(0, 20)}...`);
-    } else if (isPowerAutomateRequest) {
-      // Add Power Automate specific authentication if needed
-      // Power Automate workflows might need different auth or no auth
-      console.log('Interceptor - Power Automate request detected, skipping Dynamics auth');
     }
 
     // Add content-type header for POST/PUT requests if not present

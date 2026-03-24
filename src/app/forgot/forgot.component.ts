@@ -76,7 +76,6 @@ export class ForgotComponent implements OnInit {
     } else {
       this.loading=true;
       this.useremail = this.enteremail.value.email;
-      console.log(this.enterotp.value);
       this.verifyemail(this.useremail);
       
     }
@@ -85,7 +84,6 @@ export class ForgotComponent implements OnInit {
   verifyemail(email:any){
     this.api.tokengeneration().subscribe((restoken:any)=>{   
     this.api.forgotPassword(email).subscribe((res:any)=>{
-      console.log(res,"res");
       if(res.value.length==0){
         this.loading=false;
         this.LoaderService.failNotification("User not found.");

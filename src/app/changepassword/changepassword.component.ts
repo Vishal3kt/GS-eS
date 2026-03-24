@@ -36,11 +36,9 @@ export class ChangepasswordComponent implements OnInit {
     private notificationService: NotificationService) {}
   ngOnInit(): void {
     this.userDetails=sessionStorage.getItem("loginDetails"); 
-    console.log(this.userDetails);  
     if(this.userDetails==undefined||this.userDetails==''||this.userDetails==null){
       this.userDetails=localStorage.getItem("loginDetails");
       this.userDetails1=JSON.parse(this.userDetails);
-      console.log(this.userDetails1);
       this.username=this.userDetails1.email;
     }else{      
       this.userDetails1=JSON.parse(this.userDetails);
@@ -64,7 +62,6 @@ export class ChangepasswordComponent implements OnInit {
       return;
     }
     if (this.submitted) {
-      console.log(this.changepasswordform.value);
       this.changepassword();
     }
   }
@@ -73,7 +70,6 @@ export class ChangepasswordComponent implements OnInit {
     this.loading = true;
     this.api.forgotPassword(this.changepasswordform.value.Email).subscribe((res:any)=>{
       this.loading = false;
-      console.log(res,"res");
       if(res.value.length==0){
         this.notificationService.showError("User not found.");
       }else{

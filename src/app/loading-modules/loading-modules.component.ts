@@ -27,21 +27,15 @@ export class LoadingModulesComponent implements OnInit {
   constructor(public router: Router) {
 
     this.router.events.subscribe((event: any) => {
-      console.log('Router event:', event);
       if (event instanceof NavigationEnd) {
         this.currentUrl = event.urlAfterRedirects;
-        console.log('Current URL:', this.currentUrl);
-
         // Check for EditDetails first (more specific)
         if (this.currentUrl.includes("/LoadingComponent/EditDetails")) {
-          console.log('Setting EditDetails active state - URL matched');
-          console.log('Current navItem states before:', this.navItem.map(item => ({ name: item.name, selected: item.selected })));
           this.navItem[0].selected = "false";  // Dashboard
           this.navItem[1].selected = "false";  // My Entitlement
           this.navItem[2].selected = "true";   // My Ticket active
           this.navItem[3].selected = "false";  // Reports
           this.navItem[4].selected = "false";  // Profile
-          console.log('Current navItem states after:', this.navItem.map(item => ({ name: item.name, selected: item.selected })));
         }
         else if (this.currentUrl.includes("/LoadingComponent/Dashboard")) {
           this.navItem[0].selected = "true";   // Dashboard active
@@ -89,11 +83,9 @@ export class LoadingModulesComponent implements OnInit {
 
   ngOnInit(): void {
     this.userDetails = sessionStorage.getItem("loginDetails");
-    console.log(this.userDetails);
     if (this.userDetails == undefined || this.userDetails == '' || this.userDetails == null) {
       this.userDetails = localStorage.getItem("loginDetails");
       this.userDetails1 = JSON.parse(this.userDetails);
-      console.log(this.userDetails1);
       this.username = this.userDetails1.email;
     } else {
       this.userDetails1 = JSON.parse(this.userDetails);

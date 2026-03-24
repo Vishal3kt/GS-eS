@@ -30,29 +30,24 @@ export class ApiService {
   }
   generatepassword(username: any) {
     let url = "" + this.apiURL + "api/data/v9.0/contacts?$filter= new_portallogin eq true and emailaddress1 eq" + " " + "'" + username + "'" + " " + "and statuscode eq 1&$select=new_portalpassword,_parentcustomerid_value,fullname";
-    console.log(url);
     return this.http.get(url);
   }
   getEntitlement(email: any) {
     let url = "" + this.apiURL + "api/data/v9.0/contacts?$filter= new_portallogin eq true and emailaddress1 eq" + " " + "'" + email + "'" + " " + "and statuscode eq 1&$select=contactid, _parentcustomerid_value";
-    console.log(url);
     return this.http.get(url);
   }
   getEntitlementstep2(parentcustomerid_value: any) {
     let url = "" + this.apiURL + "api/data/v9.2/entitlements?$filter= _customerid_value eq" + " " + "'" + parentcustomerid_value + "'" + "&$select=name,startdate,enddate,totalterms,remainingterms, statuscode";
-    console.log(url);
     return this.http.get(url);
   }
   forgotPassword(email: any) {
     let url = "" + this.apiURL + "api/data/v9.0/contacts?$filter= new_portallogin eq true and emailaddress1 eq" + " " + "'" + email + "'" + " " + "and statuscode eq 1&$select=contactid";
-    console.log(url);
     return this.http.get(url);
   }
   
   getProfile(email?: string) {
     const userEmail = email || this.getUserEmail();
     let url = "" + this.apiURL + "api/data/v9.2/contacts?$filter=new_portallogin eq true and emailaddress1 eq '" + userEmail + "' and statuscode eq 1&$select=firstname,lastname,mobilephone,emailaddress1";
-    console.log(url);
     return this.http.get(url);
   }
   
@@ -62,29 +57,24 @@ export class ApiService {
   }
   mytickets(email: any, code: any) {
     let url = "" + this.apiURL + "api/data/v9.0/incidents?$filter=kkk_fromemailid eq" + " " + "'" + email + "'" + " " + "and statecode eq " + code + "&$select=createdon,caseorigincode,statecode,ticketnumber,title,casetypecode,prioritycode, _entitlementid_value,statuscode,new_entitlementname,incidentid,kkk_approvedhours,kkk_estimatedhours,new_approvedhours, new_estimatedhours, new_consumedhours, description&$orderby=createdon desc";
-    console.log(url);
     return this.http.get(url);
   }
   getentitlementname(entitleid: any) {
     // Only make API call if entitleid is not null or empty
     if (!entitleid || entitleid === 'null' || entitleid === '') {
-      console.log('No valid entitlement ID provided for getentitlementname');
       return of({ value: [] });
     }
     
     let url = "" + this.apiURL + "api/data/v9.0/entitlements?$filter= statuscode eq 1 and _customerid_value eq " + entitleid + "&$select=name,entitlementid,_customerid_value";
-    console.log('Entitlement API URL:', url);
     return this.http.get(url);
   }
 
   casecreation(token: any, data: any) {
     let url = "" + this.apiURL + "api/data/v9.0/incidents?$select=incidentid";
-    console.log(url);
     return this.http.post(url, data, { responseType: 'blob', observe: 'response' });
   }
   documentupload(token: any, data: any) {
     let url = "" + this.apiURL + "api/data/v9.0/annotations";
-    console.log(url);
     return this.http.post(url, data, { responseType: 'blob', observe: 'response' });
   }
 
@@ -95,18 +85,15 @@ export class ApiService {
   }
   startenddatefilter(username: any, startdate: any, enddate: any, statuscode: any) {
     let url = "" + this.apiURL + "api/data/v9.0/incidents?$filter=kkk_fromemailid eq '" + username + "' and statecode eq " + statuscode + " and createdon ge '" + startdate + "T00:00:00Z' and createdon le '" + enddate + "T23:59:59Z'";
-    console.log(url);
     return this.http.get(url);
   }
 
   commentdata(incidentid: any) {
     let url = "" + this.apiURL + "api/data/v9.0/annotations?$filter=_objectid_value eq " + incidentid + "&$select=subject,notetext,filename,documentbody, _ownerid_value";
-    console.log(url);
     return this.http.get(url);
   }
   ticktetvalidation(ticktetnumber: any, parentcustomeridvalue: any) {
     let url = "" + this.apiURL + "api/data/v9.0/incidents?$filter=ticketnumber eq '" + ticktetnumber + "' and _customerid_value eq '" + parentcustomeridvalue + "'";
-    console.log(url);
     return this.http.get(url);
   }
 
@@ -116,8 +103,6 @@ export class ApiService {
     const body = {
       "Login Email id": email
     };
-    console.log('Dashboard counts API URL:', url);
-    console.log('Dashboard counts API body:', body);
     return this.http.post(url, body);
   }
 
@@ -126,8 +111,6 @@ export class ApiService {
     const body = {
       "Login Email id": email
     };
-    console.log('Recent activity API URL:', url);
-    console.log('Recent activity API body:', body);
     return this.http.post(url, body);
   }
 
@@ -140,8 +123,6 @@ export class ApiService {
       "statecode": stateCode,
       "note": note
     };
-    console.log('Hold/Cancel request API URL:', url);
-    console.log('Hold/Cancel request API body:', body);
     
     // Use responseType: 'text' to handle plain text responses from Power Automate
     return this.http.post(url, body, { responseType: 'text' });

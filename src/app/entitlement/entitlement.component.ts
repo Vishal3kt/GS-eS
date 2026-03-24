@@ -82,12 +82,12 @@ export class EntitlementComponent implements OnInit, AfterViewInit {
           // Handle case where customer is not associated with any parent account
           this.dataSource.data = [];
           this.LoaderService.close();
-          this.LoaderService.failNotification('No parent account associated with this contact. Cannot retrieve entitlements.');
+          this.NotificationService.showError('No parent account associated with this contact. Cannot retrieve entitlements.');
         }
       } else {
         this.dataSource.data = [];
         this.LoaderService.close();
-        this.LoaderService.failNotification('Your session has expired. Please login to continue.');
+        this.NotificationService.showError('Your session has expired. Please login to continue.');
       }
     });
   }
